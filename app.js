@@ -2,20 +2,18 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
+const produtcsRoutes = require("./routes/produtcs-routes");
 
 const app = express();
 app.use(bodyParser.json());
 
 app.use(express.static("public/images"));
 
+app.use("/api/products", produtcsRoutes);
+
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });
 });
-
-app.get("/products", function (req, res) {
-  res.json({ res: "product page" });
-});
-
 //routes
 // frontend
 // api/home
