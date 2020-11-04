@@ -10,6 +10,16 @@ app.use(bodyParser.json());
 app.use(express.static("public/images"));
 
 app.use("/api/products", produtcsRoutes);
+// =====products route=====
+// /api/products/all  => productIndex
+// /api/products/specificProduct/:product => specificproduct
+// /api/products/productIndex/:category => productIndexcategoryIndex
+// /api/products/createNewProduct => createNewProduct
+// /api/products/newlyAddedRankingTop50/:category => newlyAddedRankingTop50 
+// /api/products/bestsellerRankingTop50/:category => bestsellerRankingTop50
+// /api/products/wishlistRankingTop50/:category => wishlistRankingTop50
+// /api/products/bargain/:category => bargain campaign products
+// ========================
 
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });
