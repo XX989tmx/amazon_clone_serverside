@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
 const produtcsRoutes = require("./routes/produtcs-routes");
+const usersRoutes = require("./routes/users-routes");
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,11 +16,13 @@ app.use("/api/products", produtcsRoutes);
 // /api/products/specificProduct/:product => specificproduct
 // /api/products/productIndex/:category => productIndexcategoryIndex
 // /api/products/createNewProduct => createNewProduct
-// /api/products/newlyAddedRankingTop50/:category => newlyAddedRankingTop50 
+// /api/products/newlyAddedRankingTop50/:category => newlyAddedRankingTop50
 // /api/products/bestsellerRankingTop50/:category => bestsellerRankingTop50
 // /api/products/wishlistRankingTop50/:category => wishlistRankingTop50
 // /api/products/bargain/:category => bargain campaign products
 // ========================
+
+app.use("/api/users", usersRoutes);
 
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });
@@ -27,7 +30,7 @@ app.get("/", function (req, res) {
 //routes
 // frontend
 // api/home
-// api/productIndex/:category (カテゴリー単位が最大 index allはない 大カテゴリーがインデックスの最大単位でそこから小カテゴリをネスト的にインデックス.実際にProductをインデックスするのは小カテゴリからで、しかしその場合も、配列の先頭何個かにキャップをかけて部分表示。新着、注目、人気などのトピックごとに角度を変え表示。)
+// api/productIndex/:category (カテゴリー単位が最大 index allはない 大カテゴリーがインデックスの最大単位でそこから小カテゴリをネスト的にインデックス.実際にProductをインデックスするのは小カテゴリからで、しかしその場合も、配列の先頭何個かにキャップをかけて部分表示。新着、注目、人気などのトピックごとに角度を変え表示。) スキーマはカテゴリごとに作っている可能性あり。
 // api/searchResult
 // api/:productId (specific product page)
 // api/cart
