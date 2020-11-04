@@ -6,8 +6,14 @@ const mongoose = require("mongoose");
 const app = express();
 app.use(bodyParser.json());
 
+app.use(express.static("public/images"));
+
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });
+});
+
+app.get("/products", function (req, res) {
+  res.json({ res: "product page" });
 });
 
 //routes
@@ -21,16 +27,25 @@ app.get("/", function (req, res) {
 // api/account/order-history
 // api/buy
 // api/order-complete
-// 
-
+//
 
 //backend
-// api/product/
+// api/products/
 // api/users/
 // api/admins/
 // api/orders/
 // api/account/
+// api/wishlists/
+// api/payments/
 // api/search/
 
+// app.use("api/products");
+// app.use("api/users");
+// app.use("api/admins");
+// app.use("api/orders");
+// app.use("api/accounts");
+// app.use("api/wishlists");
+// app.use("api/payments");
+// app.use("api/search");
 
 app.listen(8080);
