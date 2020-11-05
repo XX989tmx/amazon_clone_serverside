@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const bcryptjs = require("bcryptjs");
+const jsonwebtoken = require("jsonwebtoken");
 const User = require("../models/user");
+const { json } = require("body-parser");
 
 const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -64,10 +66,23 @@ const signup = async (req, res, next) => {
     console.log(error);
   }
 
+  let token;
+  try {
+    token = await jsonwebtoken.sign(
+      { userId: createdUser.id, email: createdUser.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+
   if (isError) {
     res.status(401).json({ messsage: "credential is not valid" });
   } else {
-    res.status(200).json({ createdUser, message: "successfully signed up" });
+    res
+      .status(200)
+      .json({ createdUser, token, message: "successfully signed up" });
   }
 };
 
@@ -119,12 +134,23 @@ const login = async (req, res, next) => {
   //     return next(error);
   //   }
 
+  let token;
+  try {
+    token = await jsonwebtoken.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+
   if (isError === true) {
     res
       .status(401)
       .json({ message: "authentication failed. credential is not valid" });
   } else {
-    res.status(200).json({ existingUser, message: "logged in" });
+    res.status(200).json({ existingUser, token, message: "logged in" });
   }
 };
 
