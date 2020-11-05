@@ -15,7 +15,21 @@ const signup = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  res.json({ res: "seller login page" });
+  const { email, password } = req.body;
+  const existingSeller = {
+    name: "someone",
+    email: "sample@mail.com",
+    password: "passworddadsad",
+  };
+
+  if (email !== existingSeller.email) {
+    return next(new Error("email is not matched"));
+  }
+
+  if (password !== existingSeller.password) {
+    return next(new Error("password is incorrect"));
+  }
+  res.json({ existingSeller, msg: "succsessfully loggedin" });
 };
 
 exports.signup = signup;
