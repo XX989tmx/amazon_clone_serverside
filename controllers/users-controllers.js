@@ -80,9 +80,13 @@ const signup = async (req, res, next) => {
   if (isError) {
     res.status(401).json({ messsage: "credential is not valid" });
   } else {
-    res
-      .status(200)
-      .json({ createdUser, token, message: "successfully signed up" });
+    res.status(200).json({
+      name: createdUser.name,
+      userId: createdUser.id,
+      email: createdUser.email,
+      token,
+      message: "successfully signed up",
+    });
   }
 };
 
