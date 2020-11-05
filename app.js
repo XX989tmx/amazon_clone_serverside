@@ -4,6 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const produtcsRoutes = require("./routes/produtcs-routes");
 const usersRoutes = require("./routes/users-routes");
+const sellersRoutes = require("./routes/sellers-routes");
 
 const app = express();
 app.use(bodyParser.json());
@@ -23,6 +24,8 @@ app.use("/api/products", produtcsRoutes);
 // ========================
 
 app.use("/api/users", usersRoutes);
+
+app.use("/api/sellers", sellersRoutes);
 
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });
