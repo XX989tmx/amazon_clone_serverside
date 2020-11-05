@@ -9,7 +9,29 @@ router.post("/signup", function (req, res) {
     password: password,
   };
 
-  res.json({ createdUser });
+  const existinguser = {
+    name: "customer1",
+    email: "customer1@gmail.com",
+    password: "samplepasswprd123",
+  };
+
+  let isError = false;
+
+  if (email === existinguser.email) {
+    isError = true;
+    throw Error("email is already taken");
+  }
+
+  if (password === existinguser.password) {
+    isError = true;
+    throw Error("password is already taken");
+  }
+
+  if (isError) {
+    res.status(401).json({ messsage: "credential is not valid" });
+  } else {
+    res.status(200).json({ createdUser, message: "successfully signed up" });
+  }
 });
 
 router.post("/login", function (req, res) {
@@ -19,7 +41,7 @@ router.post("/login", function (req, res) {
     name: "customer1",
     email: "customer1@gmail.com",
     password: "samplepasswprd123",
-  };
+  }; 
 
   let isError = false;
 
