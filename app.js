@@ -58,5 +58,14 @@ app.get("/", function (req, res) {
 // app.use("api/wishlists");
 // app.use("api/payments");
 // app.use("api/search");
-
-app.listen(8080);
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-7slh6.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+    { useNewUrlParser: true }
+  )
+  .then(() => {
+    app.listen(8080);
+  })
+  .catch((err) => {
+    console.log(err);
+  });

@@ -1,0 +1,7 @@
+{
+  "env": {
+    "DB_USER": "adminx",
+    "DB_PASSWORD": "adminx",
+    "DB_NAME": "amazon-clone_development"
+  }
+}
