@@ -42,7 +42,19 @@ const signup = async (req, res, next) => {
     console.log(error);
   }
 
-  res.json({ createdSeller });
+  let token;
+  try {
+    token = await jsonwebtoken.sign(
+      { userId: createdSeller.id, email: createdSeller.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(token);
+
+  res.json({ createdSeller, token, msg: "successfully signed up" });
 };
 
 const login = async (req, res, next) => {
