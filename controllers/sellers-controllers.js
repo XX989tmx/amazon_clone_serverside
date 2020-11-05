@@ -1,6 +1,8 @@
 const express = require("express");
 const expressValidator = require("express-validator");
 const mongoose = require("mongoose");
+const bcryptjs = require("bcryptjs");
+const jsonwebtoken = require("jsonwebtoken");
 const Seller = require("../models/seller");
 
 const signup = async (req, res, next) => {
@@ -37,11 +39,20 @@ const signup = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
-  const existingSeller = {
-    name: "someone",
-    email: "sample@mail.com",
-    password: "passworddadsad",
-  };
+
+  let existingSeller;
+  try {
+    existingSeller = await Seller.findOne({ email: email });
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!existingSeller) {
+    const error = new Error(
+      "Seller was not found in specified email address. please signup again."
+    );
+    return next(error);
+  }
 
   if (email !== existingSeller.email) {
     return next(new Error("email is not matched"));
