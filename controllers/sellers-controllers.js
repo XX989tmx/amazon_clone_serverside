@@ -1,15 +1,36 @@
 const express = require("express");
 const expressValidator = require("express-validator");
 const mongoose = require("mongoose");
+const Seller = require("../models/seller");
 
 const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
 
-  const createdSeller = {
-    name: name,
-    email: email,
-    password: password,
-  };
+  let existingSeller;
+  try {
+    existingSeller = await Seller.findOne({ email: email });
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (existingSeller) {
+    const error = new Error(
+      "same seller is already exist in specified email address.please check you email again."
+    );
+    return next(error);
+  }
+
+  const createdSeller = new Seller({
+    name,
+    email,
+    password,
+  });
+
+  try {
+    await createdSeller.save();
+  } catch (error) {
+    console.log(error);
+  }
 
   res.json({ createdSeller });
 };
