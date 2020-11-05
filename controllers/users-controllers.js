@@ -154,7 +154,13 @@ const login = async (req, res, next) => {
       .status(401)
       .json({ message: "authentication failed. credential is not valid" });
   } else {
-    res.status(200).json({ existingUser, token, message: "logged in" });
+    res.status(200).json({
+      name: existingUser.name,
+      userId: existingUser.id,
+      email: existingUser.email,
+      token,
+      message: "logged in",
+    });
   }
 };
 
