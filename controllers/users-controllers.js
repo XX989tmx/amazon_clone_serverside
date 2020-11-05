@@ -65,22 +65,36 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const existinguser = {
-    name: "customer1",
-    email: "customer1@gmail.com",
-    password: "samplepasswprd123",
-  };
-
+  //   const existinguser = {
+  //     name: "customer1",
+  //     email: "customer1@gmail.com",
+  //     password: "samplepasswprd123",
+  //   };
   let isError = false;
-
-  if (existinguser.email !== email) {
-    isError = true;
-    // throw new Error("email is not valid");
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (error) {
+    console.log(error);
   }
 
-  if (existinguser.password !== password) {
+  if (!existingUser) {
     isError = true;
-    // throw new Error("password is not valid");
+    const error = new Error(
+      "User was not found in specified email address. authentication failed"
+    );
+    return next(error);
+  }
+
+  //   if (existinguser.email !== email) {
+  //     isError = true;
+  //     // throw new Error("email is not valid");
+  //   }
+
+  if (existingUser.password !== password) {
+    isError = true;
+    const error = new Error("password is not matched");
+    return next(error);
   }
 
   if (isError) {
@@ -88,7 +102,7 @@ const login = async (req, res, next) => {
       .status(401)
       .json({ message: "authentication failed. credential is not valid" });
   } else {
-    res.status(200).json({ existinguser, message: "logged in" });
+    res.status(200).json({ existingUser, message: "logged in" });
   }
 };
 
