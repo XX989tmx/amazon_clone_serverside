@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
+const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
 
 const signup = async (req, res, next) => {
@@ -31,6 +32,14 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
+  let hashedPassword;
+  try {
+    hashedPassword = await bcryptjs.hash(password, 12);
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(hashedPassword);
+
   //   if (email === existinguser.email) {
   //     isError = true;
   //     const error = new Error("email is already taken");
@@ -46,7 +55,7 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     name: name,
     email: email,
-    password: password,
+    password: hashedPassword,
   });
 
   try {
@@ -91,13 +100,26 @@ const login = async (req, res, next) => {
   //     // throw new Error("email is not valid");
   //   }
 
-  if (existingUser.password !== password) {
+  let isValidPassword;
+  try {
+    isValidPassword = await bcryptjs.compare(password, existingUser.password);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (isValidPassword !== true) {
     isError = true;
-    const error = new Error("password is not matched");
+    const error = new Error("Password is not valid. authentication failed.");
     return next(error);
   }
 
-  if (isError) {
+  //   if (existingUser.password !== password) {
+  //     isError = true;
+  //     const error = new Error("password is not matched");
+  //     return next(error);
+  //   }
+
+  if (isError === true) {
     res
       .status(401)
       .json({ message: "authentication failed. credential is not valid" });
