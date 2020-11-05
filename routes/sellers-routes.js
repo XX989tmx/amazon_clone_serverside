@@ -1,12 +1,10 @@
 const express = require("express");
 const { check } = require("express-validator");
+const sellersControllers = require("../controllers/sellers-controllers");
+
 const router = express.Router();
 
-router.post("/signup", function (req, res) {
-  res.json({ res: "seller signup page" });
-});
+router.post("/signup", sellersControllers.signup);
 
-router.post("/login", function (req, res) {
-  res.json({ res: "seller login page" });
-});
+router.post("/login", sellersControllers.login);
 module.exports = router;
