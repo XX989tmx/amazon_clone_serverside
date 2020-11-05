@@ -22,10 +22,18 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
+  let hashedPassword;
+  try {
+    hashedPassword = await bcryptjs.hash(password, 12);
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(hashedPassword);
+
   const createdSeller = new Seller({
-    name,
-    email,
-    password,
+    name: name,
+    email: email,
+    password: hashedPassword,
   });
 
   try {
