@@ -1,11 +1,18 @@
 const express = require("express");
-const expressValidator = require("express-validator");
+const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 const Seller = require("../models/seller");
 
 const signup = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    console.log(errors);
+    const error = new Error("Invalid inputs. please check your input again.");
+    return next(error);
+  }
+
   const { name, email, password } = req.body;
 
   let existingSeller;
