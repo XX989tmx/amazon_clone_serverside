@@ -88,10 +88,22 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
+  let token;
+  try {
+    token = await jsonwebtoken.sign(
+      { userId: existingSeller.id, email: existingSeller.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(token);
+
   //   if (password !== existingSeller.password) {
   //     return next(new Error("password is incorrect"));
   //   }
-  res.json({ existingSeller, msg: "succsessfully loggedin" });
+  res.json({ existingSeller, token, msg: "succsessfully loggedin" });
 };
 
 exports.signup = signup;
