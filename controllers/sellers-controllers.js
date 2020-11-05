@@ -62,13 +62,23 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
-  if (email !== existingSeller.email) {
-    return next(new Error("email is not matched"));
+  let isValidPassword;
+  try {
+    isValidPassword = await bcryptjs.compare(password, existingSeller.password);
+  } catch (error) {
+    console.log(error);
   }
 
-  if (password !== existingSeller.password) {
-    return next(new Error("password is incorrect"));
+  if (isValidPassword === false) {
+    const error = new Error(
+      "password is incorrect. please check password again."
+    );
+    return next(error);
   }
+
+  //   if (password !== existingSeller.password) {
+  //     return next(new Error("password is incorrect"));
+  //   }
   res.json({ existingSeller, msg: "succsessfully loggedin" });
 };
 
