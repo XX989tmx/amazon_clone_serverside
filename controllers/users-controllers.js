@@ -2,10 +2,16 @@ const mongoose = require("mongoose");
 const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
 const User = require("../models/user");
-const { json } = require("body-parser");
 
 const signup = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty() !== true) {
+    console.log(errors);
+    const error = new Error("Invalid inputs. please check your input again.");
+    return next(error);
+  }
   const { name, email, password } = req.body;
   //   const user = {
   //     name: name,
