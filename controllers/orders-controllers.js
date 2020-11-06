@@ -66,4 +66,29 @@ const createOrder = async (req, res, next) => {
   res.json({ createdOrder, userAfterOrderCompletion });
 };
 
+const getAllOrderHistory = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  let orders;
+  try {
+    orders = await Order.find({ user: userId });
+  } catch (error) {
+    console.log(error);
+  }
+
+  console.log(orders);
+
+  if (!orders) {
+    const error = new Error(
+      "Error occurred. Failed to load order history data."
+    );
+    return next(error);
+  };
+
+  const totalCountOfOrders = orders.length;
+
+  res.json({ orders, totalCountOfOrders });
+};
+
 exports.createOrder = createOrder;
+exports.getAllOrderHistory = getAllOrderHistory;
