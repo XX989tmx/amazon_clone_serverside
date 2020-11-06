@@ -3,10 +3,7 @@ const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
   name: { type: String, required: true },
-  price: {
-    price: { type: Number, required: true },
-    currency: { type: String, required: true },
-  },
+  price: { type: Number },
   deliveryDate: { type: String, required: true },
   brand: { type: String, required: true },
   parentCategory: [{ type: String }],
@@ -14,6 +11,8 @@ const productSchema = new Schema({
   categories: [{ type: String }],
   stockQuantity: { type: Number },
   isStock: { type: Boolean },
+  seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
+  userCart: { type: mongoose.Types.ObjectId, ref: "User" },
 });
 
 module.exports = mongoose.model("Product", productSchema);

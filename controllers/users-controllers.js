@@ -4,6 +4,8 @@ const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
+const Product = require("../models/product");
+const Order = require("../models/order");
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -64,6 +66,10 @@ const signup = async (req, res, next) => {
     name: name,
     email: email,
     password: hashedPassword,
+    cart: {
+      items: [],
+      totalPrice: 0,
+    },
   });
 
   try {
@@ -170,5 +176,82 @@ const login = async (req, res, next) => {
   }
 };
 
+const addToCart = async (req, res, next) => {
+  const productId = req.params.productId;
+  const { quantity } = req.body;
+  const userId = req.params.userId;
+
+  //   const productToAdd = {
+  //     productId,
+  //     quantity,
+  //   };
+
+  let product;
+  try {
+    product = await Product.findById(productId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  const sum = product.price * quantity;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  let existingItemsInCart;
+
+  let existingTotalPriceOfCart;
+
+  existingTotalPriceOfCart = user.cart.totalPrice;
+
+  let updatedTotalPriceOfCart;
+  updatedTotalPriceOfCart = existingTotalPriceOfCart + sum;
+
+  existingItemsInCart = user.cart.items;
+  let updatedItemsInCart;
+  updatedItemsInCart = existingItemsInCart.concat([
+    { productId: productId, quantity: Number(quantity) },
+  ]);
+
+  user.cart = {
+    items: updatedItemsInCart,
+    totalPrice: updatedTotalPriceOfCart,
+  };
+  await user.save();
+
+  product.userCart = userId;
+  await product.save();
+
+  res.json({ cart: user.cart });
+};
+
+// async function createOrder(params) {
+//   const userId = rew.params.userId;
+//   let user;
+//   try {
+//     user = await User.findById(userId);
+//   } catch (error) {
+//     console.log(error);
+//   }
+//   if (!user) {
+//     const error = new Error("user not found");
+//     return next(error);
+//   }
+
+//   const cart = user.cart.items;
+
+//   const createdOrder = new Order({
+//     items: [...cart],
+//     user: userId,
+//   });
+
+//   await createdOrder.save();
+// }
+
 exports.signup = signup;
 exports.login = login;
+exports.addToCart = addToCart;

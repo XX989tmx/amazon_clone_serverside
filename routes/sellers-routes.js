@@ -15,4 +15,6 @@ router.post(
 );
 
 router.post("/login", sellersControllers.login);
+
+router.post("/createProduct/:sellerId", sellersControllers.createProduct);
 module.exports = router;

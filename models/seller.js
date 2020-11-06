@@ -7,6 +7,7 @@ const sellerSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  products: [{ type: mongoose.Types.ObjectId, ref: "Product" }],
 });
 
 sellerSchema.plugin(mongooseUniqueValidator);

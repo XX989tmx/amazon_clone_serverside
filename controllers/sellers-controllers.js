@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 const Seller = require("../models/seller");
+const Product = require("../models/product");
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -113,5 +114,60 @@ const login = async (req, res, next) => {
   res.json({ existingSeller, token, msg: "succsessfully loggedin" });
 };
 
+const createProduct = async (req, res, next) => {
+  const sellerId = req.params.sellerId;
+  const {
+    name,
+    price,
+    deliveryDate,
+    brand,
+    parentCategory,
+    ancestorCategories,
+    categories,
+    stockQuantity,
+    isStock,
+  } = req.body;
+
+  const createdProduct = new Product({
+    name,
+    price,
+    deliveryDate,
+    brand,
+    parentCategory,
+    ancestorCategories,
+    categories,
+    stockQuantity,
+    isStock,
+    seller: sellerId,
+  });
+
+  try {
+    await createdProduct.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  let seller;
+  try {
+    seller = await Seller.findById(sellerId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  await seller.products.push(createdProduct);
+
+  try {
+    await seller.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.json({
+    createdProduct: createdProduct.toObject({ getters: true }),
+    seller,
+  });
+};
+
 exports.signup = signup;
 exports.login = login;
+exports.createProduct = createProduct;
