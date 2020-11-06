@@ -8,7 +8,7 @@ const sellersRoutes = require("./routes/sellers-routes");
 const { ServerlessApplicationRepository } = require("aws-sdk");
 const ordersRoutes = require("./routes/orders-routes");
 const addressesRoutes = require("./routes/addresses-routes");
-
+const paymentsRoutes = require("./routes/payments-routes");
 
 const app = express();
 app.use(bodyParser.json());
@@ -27,13 +27,15 @@ app.use("/api/products", produtcsRoutes);
 // /api/products/bargain/:category => bargain campaign products
 // ========================
 
-app.use("/api/orders",ordersRoutes);
+app.use("/api/orders", ordersRoutes);
 
-app.use("/api/addresses",addressesRoutes)
+app.use("/api/addresses", addressesRoutes);
 
 app.use("/api/users", usersRoutes);
 
 app.use("/api/sellers", sellersRoutes);
+
+app.use("/api/payments", paymentsRoutes);
 
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });

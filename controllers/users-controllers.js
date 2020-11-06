@@ -71,6 +71,9 @@ const signup = async (req, res, next) => {
       totalPrice: 0,
       totalCount: 0,
     },
+    paymentMethod: {
+      creditCards:[],
+    },
   });
 
   try {

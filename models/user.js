@@ -19,6 +19,9 @@ const userSchema = new Schema({
   },
   addresses: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
   orders: [{ type: mongoose.Types.ObjectId, ref: "Order" }],
+  paymentMethod: {
+    creditCards: [{ type: mongoose.Types.ObjectId, ref: "CreditCard" }],
+  },
 });
 
 userSchema.plugin(mongooseUniqueValidator);
