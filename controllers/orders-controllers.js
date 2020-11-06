@@ -7,6 +7,8 @@ const createOrder = async (req, res, next) => {
   const userId = req.params.userId;
   const addressId = req.params.addressId;
 
+  const { nameOfPaymentMethod } = req.body;
+
   let user;
   try {
     user = await User.findById(userId);
@@ -30,6 +32,7 @@ const createOrder = async (req, res, next) => {
     dateOrdered: new Date(Date.now()).toString(),
     shipmentAddress: address,
     user: userId,
+    nameOfPaymentMethod,
   });
 
   try {
@@ -83,7 +86,7 @@ const getAllOrderHistory = async (req, res, next) => {
       "Error occurred. Failed to load order history data."
     );
     return next(error);
-  };
+  }
 
   const totalCountOfOrders = orders.length;
 

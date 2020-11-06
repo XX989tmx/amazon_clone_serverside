@@ -13,6 +13,7 @@ const orderSchema = new Schema({
   dateOrdered: { type: String },
   shipmentAddress: { type: mongoose.Types.ObjectId, ref: "Address" },
   user: { type: mongoose.Types.ObjectId, ref: "User" },
+  nameOfPaymentMethod: { type: String },
 });
 
 module.exports = mongoose.model("Order", orderSchema);
