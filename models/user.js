@@ -16,6 +16,7 @@ const userSchema = new Schema({
     ],
     totalPrice: { type: Number },
   },
+  addresses: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
 });
 
 userSchema.plugin(mongooseUniqueValidator);

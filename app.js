@@ -5,6 +5,10 @@ const mongoose = require("mongoose");
 const produtcsRoutes = require("./routes/produtcs-routes");
 const usersRoutes = require("./routes/users-routes");
 const sellersRoutes = require("./routes/sellers-routes");
+const { ServerlessApplicationRepository } = require("aws-sdk");
+const ordersRoutes = require("./routes/orders-routes");
+const addressesRoutes = require("./routes/addresses-routes");
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -22,6 +26,10 @@ app.use("/api/products", produtcsRoutes);
 // /api/products/wishlistRankingTop50/:category => wishlistRankingTop50
 // /api/products/bargain/:category => bargain campaign products
 // ========================
+
+app.use("/api/orders",ordersRoutes);
+
+app.use("/api/addresses",addressesRoutes)
 
 app.use("/api/users", usersRoutes);
 
