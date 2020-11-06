@@ -67,6 +67,32 @@ const getProductIndexByCategory = async (req, res, next) => {
   });
 };
 
+const getProductIndexByParentCategory = async (req, res, next) => {
+  const parentCategory = req.params.parentCategory;
+
+  let products;
+  try {
+    products = await Product.find({ parentCategory: parentCategory });
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!products) {
+    const error = new Error(
+      "No product data was found in specified parent category."
+    );
+    return next(error);
+  }
+
+  const countOfProduct = products.length;
+
+  res.json({
+    products: products.map((v) => v.toObject({ getters: true })),
+    countOfProduct,
+  });
+};
+
 exports.getAllProducts = getAllProducts;
 exports.getSpecificProductById = getSpecificProductById;
 exports.getProductIndexByCategory = getProductIndexByCategory;
+exports.getProductIndexByParentCategory = getProductIndexByParentCategory;

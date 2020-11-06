@@ -16,6 +16,11 @@ router.get(
   productsControllers.getProductIndexByCategory
 );
 
+router.get(
+  "/getProductIndexByParentCategory/:parentCategory",
+  productsControllers.getProductIndexByParentCategory
+);
+
 router.post("/createNewProduct", function (req, res) {
   res.json({ res: "add new product page" });
 });
