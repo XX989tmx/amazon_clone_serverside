@@ -1,8 +1,16 @@
+const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const CreditCard = require("../models/credit-card");
 
 const addNewCreditCard = async (req, res, next) => {
   const userId = req.userData.userId;
+
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    console.log(errors);
+    const error = new Error("Invalid inputs.");
+    return next(error);
+  }
 
   const {
     cardNumber,
