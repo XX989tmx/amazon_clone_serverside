@@ -168,6 +168,53 @@ const createProduct = async (req, res, next) => {
   });
 };
 
+const updateProduct = async (req, res, next) => {
+  const sellerId = req.params.sellerId;
+  const productId = req.params.productId;
+  const {
+    name,
+    price,
+    deliveryDate,
+    brand,
+    parentCategory,
+    ancestorCategories,
+    categories,
+    stockQuantity,
+    isStock,
+  } = req.body;
+
+  let product;
+  try {
+    product = await Product.findById(productId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!product) {
+    const error = new Error("Specified product data was not found.");
+    return next(error);
+  }
+
+  product.name = name;
+  product.price = price;
+  product.deliveryDate = deliveryDate;
+  product.brand = brand;
+  product.parentCategory = parentCategory;
+  product.ancestorCategories = ancestorCategories;
+  product.categories = categories;
+  product.stockQuantity = stockQuantity;
+  product.isStock = isStock;
+
+  try {
+    await product.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.json({ product });
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.createProduct = createProduct;
+exports.updateProduct = updateProduct;

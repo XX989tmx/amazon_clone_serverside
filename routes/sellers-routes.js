@@ -17,4 +17,5 @@ router.post(
 router.post("/login", sellersControllers.login);
 
 router.post("/createProduct/:sellerId", sellersControllers.createProduct);
+router.patch("/updateProduct/:productId", sellersControllers.updateProduct);
 module.exports = router;
