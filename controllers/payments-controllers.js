@@ -21,6 +21,7 @@ const addNewCreditCard = async (req, res, next) => {
   }
 
   const createdCreditCard = new CreditCard({
+    user: user._id,
     cardNumber,
     firstName,
     lastName,
@@ -68,6 +69,16 @@ const updateCreditCard = async (req, res, next) => {
 
   if (!existingCreditCard) {
     const error = new Error("Card data was not found.");
+    return next(error);
+  }
+
+  console.log(existingCreditCard.user);
+  console.log(req.userData.userId);
+
+  if (existingCreditCard.user.toString() !== req.userData.userId) {
+    const error = new Error(
+      "Authorization error. you are not authorized to edit this data."
+    );
     return next(error);
   }
 
