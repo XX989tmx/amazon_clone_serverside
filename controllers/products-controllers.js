@@ -44,5 +44,29 @@ const getSpecificProductById = async (req, res, next) => {
   res.json({ product: product.toObject({ getters: true }) });
 };
 
+const getProductIndexByCategory = async (req, res, next) => {
+  const category = req.params.category;
+
+  let products;
+  try {
+    products = await Product.find({ categories: category });
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!products) {
+    const error = new Error("product data was not found for this category.");
+    return next(error);
+  }
+
+  const countOfProducts = products.length;
+
+  res.json({
+    products: products.map((v) => v.toObject({ getters: true })),
+    countOfProducts,
+  });
+};
+
 exports.getAllProducts = getAllProducts;
 exports.getSpecificProductById = getSpecificProductById;
+exports.getProductIndexByCategory = getProductIndexByCategory;
