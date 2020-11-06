@@ -6,52 +6,11 @@ const router = express.Router();
 
 router.get("/getAllProducts", productsControllers.getAllProducts);
 
-router.get("/specificProduct/:product", function (req, res) {
-  //:product = productName or productId
-  const productName = req.params.product;
-  let arr = [
-    {
-      id: "p1",
-      name: "ヨシカワ ホットサンドメーカー",
-      price: {
-        price: 1473,
-        currency: "JPY",
-      },
-      deliveryDate: "11/20 2020",
-      brand: "ヨシカワ(Yoshikawa)",
-      parentCategory: ["鍋・フライパン"],
-      ancestorCategories: [
-        "鍋・フライパン",
-        "キッチン用品",
-        "ホーム＆キッチン",
-      ],
-      categories: ["直火式ホットサンド・ワッフルメーカー"],
-      stockQuantity: 16,
-      isStock: true,
-    },
-    {
-      id: "p2",
-      name: "おいしい水",
-      price: {
-        price: 150,
-        currency: "JPY",
-      },
-      deliveryDate: "11/20 2020",
-      brand: "伊藤園",
-      parentCategory: ["水、飲料"],
-      ancestorCategories: ["水、飲料", "食品、日用品"],
-      categories: ["ミネラルウォーター"],
-      stockQuantity: 10,
-      isStock: true,
-    },
-  ];
+router.get(
+  "/getSpecificProductById/:productId",
+  productsControllers.getSpecificProductById
+);
 
-  const result = arr.filter((v) => {
-    return v.name === productName;
-  });
-
-  res.json({ result });
-});
 router.get("/productIndex/:category", function (req, res) {
   const category = req.params.category;
   let arr = [
