@@ -92,7 +92,33 @@ const getProductIndexByParentCategory = async (req, res, next) => {
   });
 };
 
+const getProductIndexByAncestorCategory = async (req, res, next) => {
+  const ancestorCategory = req.params.ancestorCategory;
+
+  let products;
+  try {
+    products = await Product.find({ ancestorCategories: ancestorCategory });
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!products) {
+    const error = new Error(
+      "No product data was found in specified ancestor category."
+    );
+    return next(error);
+  }
+
+  const countOfProduct = products.length;
+
+  res.json({
+    products: products.map((v) => v.toObject({ getters: true })),
+    countOfProduct,
+  });
+};
+
 exports.getAllProducts = getAllProducts;
 exports.getSpecificProductById = getSpecificProductById;
 exports.getProductIndexByCategory = getProductIndexByCategory;
 exports.getProductIndexByParentCategory = getProductIndexByParentCategory;
+exports.getProductIndexByAncestorCategory = getProductIndexByAncestorCategory;
