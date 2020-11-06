@@ -59,6 +59,12 @@ const updateCreditCard = async (req, res, next) => {
   const userId = req.params.userId;
   const creditCardId = req.params.creditCardId;
 
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    const error = new Error("Invalid inputs.");
+    return next(error);
+  }
+
   const {
     cardNumber,
     firstName,
