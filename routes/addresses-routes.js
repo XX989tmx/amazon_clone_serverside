@@ -6,4 +6,8 @@ const router = express.Router();
 
 router.post("/createAddress/:userId", addressControllers.createAddress);
 router.patch("/updateAddress/:addressId", addressControllers.updateAddress);
+router.delete(
+  "/deleteAddress/:userId/:addressId",
+  addressControllers.deleteAddress
+);
 module.exports = router;

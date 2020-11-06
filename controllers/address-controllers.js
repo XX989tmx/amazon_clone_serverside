@@ -93,10 +93,55 @@ const updateAddress = async (req, res, next) => {
     await existingAddress.save();
   } catch (error) {
     console.log(error);
-  };
+  }
 
   res.json({ existingAddress });
 };
 
+const deleteAddress = async (req, res, next) => {
+  const userId = req.params.userId;
+  const addressId = req.params.addressId;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!user) {
+    const error = new Error("User was not found.");
+    return next(error);
+  }
+
+  let address;
+  try {
+    address = await Address.findById(addressId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!address) {
+    const error = new Error("address data was not found. ");
+    return next(error);
+  }
+
+  try {
+    await user.addresses.pull(addressId);
+    await user.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    await address.remove();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.json({ user });
+};
+
 exports.createAddress = createAddress;
 exports.updateAddress = updateAddress;
+exports.deleteAddress = deleteAddress;
