@@ -69,6 +69,7 @@ const signup = async (req, res, next) => {
     cart: {
       items: [],
       totalPrice: 0,
+      totalCount: 0,
     },
   });
 
@@ -211,15 +212,25 @@ const addToCart = async (req, res, next) => {
   let updatedTotalPriceOfCart;
   updatedTotalPriceOfCart = existingTotalPriceOfCart + sum;
 
+  let existingTotalCountOfItemInCart;
+  existingTotalCountOfItemInCart = user.cart.totalCount;
+
+  let updatedTotalCountOfItemInCart;
+  updatedTotalCountOfItemInCart = existingTotalCountOfItemInCart + quantity;
+
   existingItemsInCart = user.cart.items;
   let updatedItemsInCart;
   updatedItemsInCart = existingItemsInCart.concat([
-    { productId: productId, quantity: Number(quantity) },
+    {
+      productId: productId,
+      quantity: Number(quantity),
+    },
   ]);
 
   user.cart = {
     items: updatedItemsInCart,
     totalPrice: updatedTotalPriceOfCart,
+    totalCount: updatedTotalCountOfItemInCart,
   };
   await user.save();
 

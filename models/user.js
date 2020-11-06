@@ -15,6 +15,7 @@ const userSchema = new Schema({
       },
     ],
     totalPrice: { type: Number },
+    totalCount: { type: Number },
   },
   addresses: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
   orders: [{ type: mongoose.Types.ObjectId, ref: "Order" }],
