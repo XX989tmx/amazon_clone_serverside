@@ -259,8 +259,38 @@ const deleteProduct = async (req, res, next) => {
   res.json({ seller });
 };
 
+const getAllProductOfThisSeller = async (req, res, next) => {
+  const sellerId = req.params.sellerId;
+
+  let allProductOfThisSeller;
+  try {
+    allProductOfThisSeller = await Product.find({ seller: sellerId });
+  } catch (error) {
+    console.log(error);
+  }
+
+  console.log(allProductOfThisSeller);
+
+  if (!allProductOfThisSeller) {
+    const error = new Error(
+      "Product data was not found fot this seller. please try again."
+    );
+    return next(error);
+  };
+
+  const countOfProducts = allProductOfThisSeller.length;
+
+  res.json({
+    allProductOfThisSeller: allProductOfThisSeller.map((v) =>
+      v.toObject({ getters: true })
+    ),
+    countOfProducts,
+  });
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.createProduct = createProduct;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
+exports.getAllProductOfThisSeller = getAllProductOfThisSeller;

@@ -4,6 +4,11 @@ const sellersControllers = require("../controllers/sellers-controllers");
 
 const router = express.Router();
 
+router.get(
+  "/getAllProductOfThisSeller/:sellerId",
+  sellersControllers.getAllProductOfThisSeller
+);
+
 router.post(
   "/signup",
   [
