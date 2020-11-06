@@ -11,4 +11,9 @@ router.patch(
   paymentsControllers.updateCreditCard
 );
 
+router.delete(
+  "/deleteCreditCard/:userId/:creditCardId",
+  paymentsControllers.deleteCreditCard
+);
+
 module.exports = router;

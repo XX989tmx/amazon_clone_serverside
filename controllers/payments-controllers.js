@@ -87,5 +87,49 @@ const updateCreditCard = async (req, res, next) => {
   res.json({ existingCreditCard });
 };
 
+const deleteCreditCard = async (req, res, next) => {
+  const userId = req.params.userId;
+  const creditCardId = req.params.creditCardId;
+
+  let existingCreditCard;
+  try {
+    existingCreditCard = await CreditCard.findById(creditCardId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!existingCreditCard) {
+    const error = new Error("Card was not found.");
+    return next(error);
+  }
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!user) {
+    const error = new Error("User was not found.");
+    return next(error);
+  }
+  try {
+    await user.paymentMethod.creditCards.pull(existingCreditCard);
+    await user.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    await existingCreditCard.remove();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.json({ user });
+};
+
 exports.addNewCreditCard = addNewCreditCard;
 exports.updateCreditCard = updateCreditCard;
+exports.deleteCreditCard = deleteCreditCard;
