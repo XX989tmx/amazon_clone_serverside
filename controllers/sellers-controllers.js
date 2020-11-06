@@ -214,7 +214,53 @@ const updateProduct = async (req, res, next) => {
   res.json({ product });
 };
 
+const deleteProduct = async (req, res, next) => {
+  const sellerId = req.params.sellerId;
+  const productId = req.params.productId;
+
+  let seller;
+  try {
+    seller = await Seller.findById(sellerId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!seller) {
+    const error = new Error("Specified Seller was not found.");
+    return next(error);
+  }
+
+  let product;
+
+  try {
+    product = await Product.findById(productId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!product) {
+    const error = new Error("Specified product was not found.");
+    return next(error);
+  }
+
+  try {
+    await seller.products.pull(productId);
+    await seller.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    await product.remove();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.json({ seller });
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.createProduct = createProduct;
 exports.updateProduct = updateProduct;
+exports.deleteProduct = deleteProduct;
