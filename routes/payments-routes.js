@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-router.post("/addNewCreditCard/:userId", paymentsControllers.addNewCreditCard);
+router.post("/addNewCreditCard", paymentsControllers.addNewCreditCard);
 
 router.patch(
   "/updateCreditCard/:creditCardId",
@@ -15,7 +15,7 @@ router.patch(
 );
 
 router.delete(
-  "/deleteCreditCard/:userId/:creditCardId",
+  "/deleteCreditCard/:creditCardId",
   paymentsControllers.deleteCreditCard
 );
 

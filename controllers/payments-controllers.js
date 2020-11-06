@@ -2,7 +2,7 @@ const User = require("../models/user");
 const CreditCard = require("../models/credit-card");
 
 const addNewCreditCard = async (req, res, next) => {
-  const userId = req.params.userId;
+  const userId = req.userData.userId;
 
   const {
     cardNumber,
@@ -99,7 +99,7 @@ const updateCreditCard = async (req, res, next) => {
 };
 
 const deleteCreditCard = async (req, res, next) => {
-  const userId = req.params.userId;
+  const userId = req.userData.userId;
   const creditCardId = req.params.creditCardId;
 
   let existingCreditCard;
@@ -125,6 +125,17 @@ const deleteCreditCard = async (req, res, next) => {
     const error = new Error("User was not found.");
     return next(error);
   }
+
+  console.log(existingCreditCard.user);
+  console.log(req.userData.userId);
+
+  if (existingCreditCard.user.toString() !== req.userData.userId) {
+    const error = new Error(
+      "Authorization failed. you are not allowed to delete this data."
+    );
+    return next(error);
+  }
+
   try {
     await user.paymentMethod.creditCards.pull(existingCreditCard);
     await user.save();
