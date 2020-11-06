@@ -240,6 +240,31 @@ const addToCart = async (req, res, next) => {
   res.json({ cart: user.cart });
 };
 
+const clearCart = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  user.cart = {
+    items: [],
+    totalPrice: 0,
+    totalCount: 0,
+  };
+
+  try {
+    await user.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.json({ user, msg: "cart was emptied" });
+};
+
 // async function createOrder(params) {
 //   const userId = rew.params.userId;
 //   let user;
@@ -266,3 +291,4 @@ const addToCart = async (req, res, next) => {
 exports.signup = signup;
 exports.login = login;
 exports.addToCart = addToCart;
+exports.clearCart = clearCart;

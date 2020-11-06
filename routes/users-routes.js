@@ -18,4 +18,6 @@ router.post("/login", usersControllers.login);
 
 router.post("/addToCart/:userId/:productId", usersControllers.addToCart);
 
+router.get("/clearCart/:userId", usersControllers.clearCart);
+
 module.exports = router;
