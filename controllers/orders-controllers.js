@@ -46,7 +46,24 @@ const createOrder = async (req, res, next) => {
     console.log(error);
   }
 
-  res.json({ createdOrder, user });
+  // clear cart after order completion;
+  let userAfterOrderCompletion;
+
+  try {
+    userAfterOrderCompletion = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  userAfterOrderCompletion.cart = {
+    items: [],
+    totalPrice: 0,
+    totalCount: 0,
+  };
+
+  await userAfterOrderCompletion.save();
+
+  res.json({ createdOrder, userAfterOrderCompletion });
 };
 
 exports.createOrder = createOrder;
