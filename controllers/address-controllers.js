@@ -61,6 +61,14 @@ const createAddress = async (req, res, next) => {
 
 const updateAddress = async (req, res, next) => {
   const addressId = req.params.addressId;
+
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    const error = new Error("Invalid inputs.");
+    console.log(error);
+    return next(error);
+  }
+
   const {
     zipCode,
     country,
