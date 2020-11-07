@@ -14,6 +14,9 @@ const orderSchema = new Schema({
   shipmentAddress: { type: mongoose.Types.ObjectId, ref: "Address" },
   user: { type: mongoose.Types.ObjectId, ref: "User" },
   nameOfPaymentMethod: { type: String },
+  usedAmazonPoint: { type: Number },
+  usedAmazonCredit: { type: Number },
+  addedAmazonPoint: { type: Number },
 });
 
 module.exports = mongoose.model("Order", orderSchema);

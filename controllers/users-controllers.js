@@ -72,7 +72,11 @@ const signup = async (req, res, next) => {
       totalCount: 0,
     },
     paymentMethod: {
-      creditCards:[],
+      creditCards: [],
+    },
+    wallet: {
+      amazonPoint: 0,
+      amazonCredit: 0,
     },
   });
 

@@ -22,6 +22,10 @@ const userSchema = new Schema({
   paymentMethod: {
     creditCards: [{ type: mongoose.Types.ObjectId, ref: "CreditCard" }],
   },
+  wallet: {
+    amazonPoint: { type: Number },
+    amazonCredit: { type: Number },
+  },
 });
 
 userSchema.plugin(mongooseUniqueValidator);

@@ -7,7 +7,21 @@ const createOrder = async (req, res, next) => {
   const userId = req.params.userId;
   const addressId = req.params.addressId;
 
-  const { nameOfPaymentMethod } = req.body;
+  //   const useAmazonPoint = req.query.amazonPoint; // boolean
+  //   const useAmazonCredit = req.query.amazonCredit; // boolean
+
+  const {
+    nameOfPaymentMethod,
+    amazonPointAmount,
+    amazonCreditAmount,
+  } = req.body;
+
+  let isAmazonCreditUsed;
+  let amountOfAmazonCreditUsed = 0;
+  let isAmazonPointUsed;
+  let amountOfAmazonPointUsed = 0;
+
+  let AddedAmazonPoint = 0;
 
   let user;
   try {
@@ -15,6 +29,16 @@ const createOrder = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
+
+  if (user.cart.items.length === 0) {
+    const error = new Error("cart is empty. Could not make a order.");
+    return next(error);
+  }
+
+  AddedAmazonPoint = Math.round(user.cart.totalPrice * 0.01);
+
+  let existingAmazonPointBalance = user.wallet.amazonPoint;
+  let existingAmazonCreditBalance = user.wallet.amazonCredit;
 
   // user specified address. eg. default address
   let address;
@@ -25,6 +49,40 @@ const createOrder = async (req, res, next) => {
     console.log(error);
   }
 
+  if (
+    user.cart.totalPrice !== 0 &&
+    !!amazonPointAmount &&
+    existingAmazonPointBalance >= amazonPointAmount
+  ) {
+    isAmazonPointUsed = true;
+    amountOfAmazonPointUsed = Number(amazonPointAmount);
+    if (amountOfAmazonPointUsed > user.cart.totalPrice) {
+      const error = new Error(
+        "Invalid input amount. Please input the same amount of amazon point as the total price of cart."
+      );
+      return next(error);
+    }
+    user.cart.totalPrice = user.cart.totalPrice - amountOfAmazonPointUsed;
+  }
+
+  if (
+    user.cart.totalPrice !== 0 &&
+    !!amazonCreditAmount &&
+    existingAmazonCreditBalance >= amazonCreditAmount
+  ) {
+    isAmazonCreditUsed = true;
+    amountOfAmazonCreditUsed = Number(amazonCreditAmount);
+    if (amountOfAmazonCreditUsed > user.cart.totalPrice) {
+      const error = new Error(
+        "Invalid input amount. Please input the same amount of amazon credit as the total price of cart."
+      );
+      return next(error);
+    }
+    user.cart.totalPrice = user.cart.totalPrice - amountOfAmazonCreditUsed;
+  }
+
+  
+
   const createdOrder = new Order({
     items: user.cart.items,
     totalPrice: user.cart.totalPrice,
@@ -33,6 +91,9 @@ const createOrder = async (req, res, next) => {
     shipmentAddress: address,
     user: userId,
     nameOfPaymentMethod,
+    usedAmazonCredit: amountOfAmazonCreditUsed,
+    usedAmazonPoint: amountOfAmazonPointUsed,
+    addedAmazonPoint: AddedAmazonPoint,
   });
 
   try {
@@ -64,7 +125,19 @@ const createOrder = async (req, res, next) => {
     totalCount: 0,
   };
 
-  await userAfterOrderCompletion.save();
+  const updatedAmazonPointBalance =
+    existingAmazonPointBalance + AddedAmazonPoint - amountOfAmazonPointUsed;
+  const updatedAmazonCreditBalance =
+    existingAmazonCreditBalance - amountOfAmazonCreditUsed;
+
+  userAfterOrderCompletion.wallet.amazonPoint = updatedAmazonPointBalance;
+
+  userAfterOrderCompletion.wallet.amazonCredit = updatedAmazonCreditBalance;
+  try {
+    await userAfterOrderCompletion.save();
+  } catch (error) {
+    console.log(error);
+  }
 
   res.json({ createdOrder, userAfterOrderCompletion });
 };
@@ -83,10 +156,10 @@ const getAllOrderHistory = async (req, res, next) => {
     return next(error);
   }
 
-//   if (count === 0) {
-//     const error = new Error("no data was found.");
-//     return next(error);
-//   }
+  //   if (count === 0) {
+  //     const error = new Error("no data was found.");
+  //     return next(error);
+  //   }
 
   totalItems = count;
 
