@@ -1,9 +1,15 @@
+const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const Address = require("../models/address");
 
 const createAddress = async (req, res, next) => {
   const userId = req.params.userId;
 
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    const error = new Error("Invalid inputs.");
+    return next(error);
+  }
   const {
     zipCode,
     country,
