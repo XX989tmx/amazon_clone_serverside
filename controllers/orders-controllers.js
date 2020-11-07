@@ -21,6 +21,9 @@ const createOrder = async (req, res, next) => {
   let isAmazonPointUsed = false;
   let amountOfAmazonPointUsed = 0;
 
+  let totalDiscountAmount = 0;
+  let totalPriceBeforeDiscount = 0;
+
   let AddedAmazonPoint = 0;
 
   let user;
@@ -34,6 +37,8 @@ const createOrder = async (req, res, next) => {
     const error = new Error("cart is empty. Could not make a order.");
     return next(error);
   }
+
+  totalPriceBeforeDiscount = user.cart.totalPrice;
 
   AddedAmazonPoint = Math.round(user.cart.totalPrice * 0.01);
 
@@ -63,6 +68,7 @@ const createOrder = async (req, res, next) => {
       return next(error);
     }
     user.cart.totalPrice = user.cart.totalPrice - amountOfAmazonPointUsed;
+    totalDiscountAmount = totalDiscountAmount + amountOfAmazonPointUsed;
   }
 
   if (
@@ -79,6 +85,7 @@ const createOrder = async (req, res, next) => {
       return next(error);
     }
     user.cart.totalPrice = user.cart.totalPrice - amountOfAmazonCreditUsed;
+    totalDiscountAmount = totalDiscountAmount + amountOfAmazonCreditUsed;
   }
 
   const createdOrder = new Order({
@@ -94,6 +101,8 @@ const createOrder = async (req, res, next) => {
     addedAmazonPoint: AddedAmazonPoint,
     isAmazonCreditUsed,
     isAmazonPointUsed,
+    totalDiscountAmount,
+    totalPriceBeforeDiscount,
   });
 
   try {

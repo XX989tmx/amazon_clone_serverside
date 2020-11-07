@@ -19,6 +19,8 @@ const orderSchema = new Schema({
   addedAmazonPoint: { type: Number },
   isAmazonCreditUsed: { type: Boolean },
   isAmazonPointUsed: { type: Boolean },
+  totalDiscountAmount: { type: Number },
+  totalPriceBeforeDiscount: { type: Number },
 });
 
 module.exports = mongoose.model("Order", orderSchema);
