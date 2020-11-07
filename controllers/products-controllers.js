@@ -7,7 +7,24 @@ const getAllProducts = async (req, res, next) => {
 
   //pagination
   const currentPage = req.query.page || 1;
-  let perPage = 5;
+  let perPage;
+
+  switch (req.query.perPage) {
+    case "20":
+      perPage = 20;
+      break;
+    case "15":
+      perPage = 15;
+      break;
+    case "10":
+      perPage = 10;
+      break;
+
+    default:
+      perPage = 5;
+      break;
+  }
+
   let totalItems;
   let count;
   try {
