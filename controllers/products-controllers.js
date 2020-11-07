@@ -126,9 +126,25 @@ const getProductIndexByCategory = async (req, res, next) => {
 const getProductIndexByParentCategory = async (req, res, next) => {
   const parentCategory = req.params.parentCategory;
 
+  const currentPage = req.query.page || 1;
+  let perPage;
+  let totalItems;
+  let count;
+  perPage = 5;
+  try {
+    count = await Product.find({
+      parentCategory: parentCategory,
+    }).countDocuments();
+  } catch (error) {
+    console.log(error);
+  }
+  totalItems = count;
+
   let products;
   try {
-    products = await Product.find({ parentCategory: parentCategory });
+    products = await Product.find({ parentCategory: parentCategory })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
@@ -145,6 +161,7 @@ const getProductIndexByParentCategory = async (req, res, next) => {
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProduct,
+    totalItems,
   });
 };
 
