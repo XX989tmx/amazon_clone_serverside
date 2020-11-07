@@ -16,9 +16,9 @@ const createOrder = async (req, res, next) => {
     amazonCreditAmount,
   } = req.body;
 
-  let isAmazonCreditUsed;
+  let isAmazonCreditUsed = false;
   let amountOfAmazonCreditUsed = 0;
-  let isAmazonPointUsed;
+  let isAmazonPointUsed = false;
   let amountOfAmazonPointUsed = 0;
 
   let AddedAmazonPoint = 0;
@@ -81,8 +81,6 @@ const createOrder = async (req, res, next) => {
     user.cart.totalPrice = user.cart.totalPrice - amountOfAmazonCreditUsed;
   }
 
-  
-
   const createdOrder = new Order({
     items: user.cart.items,
     totalPrice: user.cart.totalPrice,
@@ -94,6 +92,8 @@ const createOrder = async (req, res, next) => {
     usedAmazonCredit: amountOfAmazonCreditUsed,
     usedAmazonPoint: amountOfAmazonPointUsed,
     addedAmazonPoint: AddedAmazonPoint,
+    isAmazonCreditUsed,
+    isAmazonPointUsed,
   });
 
   try {
