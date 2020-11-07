@@ -10,12 +10,24 @@ router.use(checkAuth);
 router.post(
   "/addNewCreditCard",
   [
-    check("cardNumber").isLength({ min: 16, max: 16 }),
-    check("firstName").not().isEmpty(),
-    check("lastName").not().isEmpty(),
-    check("pinNumber").isLength({ min: 3, max: 3 }),
-    check("expirationMonth").isLength({ min: 2, max: 2 }),
-    check("expirationYear").isLength({ min: 2, max: 2 }),
+    check("cardNumber")
+      .isCreditCard()
+      .isLength({ min: 16, max: 16 })
+      .trim()
+      .toInt(),
+    check("firstName").not().isEmpty().isUppercase().trim(),
+    check("lastName").not().isEmpty().isUppercase().trim(),
+    check("pinNumber").isLength({ min: 3, max: 3 }).isNumeric().trim().toInt(),
+    check("expirationMonth")
+      .isLength({ min: 2, max: 2 })
+      .isNumeric()
+      .trim()
+      .toInt(),
+    check("expirationYear")
+      .isLength({ min: 2, max: 2 })
+      .isNumeric()
+      .trim()
+      .toInt(),
   ],
   paymentsControllers.addNewCreditCard
 );
@@ -23,12 +35,24 @@ router.post(
 router.patch(
   "/updateCreditCard/:creditCardId",
   [
-    check("cardNumber").isLength({ min: 16, max: 16 }),
-    check("firstName").not().isEmpty(),
-    check("lastName").not().isEmpty(),
-    check("pinNumber").isLength({ min: 3, max: 3 }),
-    check("expirationMonth").isLength({ min: 2, max: 2 }),
-    check("expirationYear").isLength({ min: 2, max: 2 }),
+    check("cardNumber")
+      .isCreditCard()
+      .isLength({ min: 16, max: 16 })
+      .trim()
+      .toInt(),
+    check("firstName").not().isEmpty().isUppercase().trim(),
+    check("lastName").not().isEmpty().isUppercase().trim(),
+    check("pinNumber").isLength({ min: 3, max: 3 }).isNumeric().trim().toInt(),
+    check("expirationMonth")
+      .isLength({ min: 2, max: 2 })
+      .isNumeric()
+      .trim()
+      .toInt(),
+    check("expirationYear")
+      .isLength({ min: 2, max: 2 })
+      .isNumeric()
+      .trim()
+      .toInt(),
   ],
   paymentsControllers.updateCreditCard
 );
