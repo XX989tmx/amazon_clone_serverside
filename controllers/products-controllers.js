@@ -168,9 +168,25 @@ const getProductIndexByParentCategory = async (req, res, next) => {
 const getProductIndexByAncestorCategory = async (req, res, next) => {
   const ancestorCategory = req.params.ancestorCategory;
 
+  let perPage;
+  const currentPage = req.query.page || 1;
+  perPage = 5;
+  let totalItems;
+  let count;
+  try {
+    count = await Product.find({
+      ancestorCategories: ancestorCategory,
+    }).countDocuments();
+  } catch (error) {
+    console.log(error);
+  }
+  totalItems = count;
+
   let products;
   try {
-    products = await Product.find({ ancestorCategories: ancestorCategory });
+    products = await Product.find({ ancestorCategories: ancestorCategory })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
@@ -187,6 +203,7 @@ const getProductIndexByAncestorCategory = async (req, res, next) => {
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProduct,
+    totalItems,
   });
 };
 
