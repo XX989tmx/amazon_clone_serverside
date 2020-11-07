@@ -5,9 +5,23 @@ const Product = require("../models/product");
 const getAllProducts = async (req, res, next) => {
   // demonstration only;
 
+  //pagination
+  const currentPage = req.query.page || 1;
+  let perPage = 5;
+  let totalItems;
+  let count;
+  try {
+    count = await Product.find({}).countDocuments();
+  } catch (error) {
+    console.log();
+  }
+  totalItems = count;
+
   let products;
   try {
-    products = await Product.find({});
+    products = await Product.find({})
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
@@ -22,6 +36,7 @@ const getAllProducts = async (req, res, next) => {
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProducts,
+    totalItems,
   });
 };
 
@@ -46,10 +61,33 @@ const getSpecificProductById = async (req, res, next) => {
 
 const getProductIndexByCategory = async (req, res, next) => {
   const category = req.params.category;
+  let perPage;
+  const currentPage = req.query.page || 1;
+
+  //   if (req.query.perPage === 60) {
+  //     perPage = 60;
+  //   } else if (req.query.perPage === 40) {
+  //     perPage = 40;
+  //   } else {
+  //     perPage = 24;
+  //   }
+  perPage = 5;
+
+  let totalItems;
+  let count;
+  try {
+    count = await Product.find({ categories: category }).countDocuments();
+  } catch (error) {
+    console.log(error);
+  }
+
+  totalItems = count;
 
   let products;
   try {
-    products = await Product.find({ categories: category });
+    products = await Product.find({ categories: category })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
@@ -64,6 +102,7 @@ const getProductIndexByCategory = async (req, res, next) => {
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProducts,
+    totalItems,
   });
 };
 
