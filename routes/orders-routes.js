@@ -8,4 +8,9 @@ router.post("/createOrder/:userId/:addressId", ordersControllers.createOrder);
 
 router.get("/getAllOrderHistory/:userId", ordersControllers.getAllOrderHistory);
 
+router.get(
+  "/getOrderHistoriesTransactedWithAmazonCredit/:userId",
+  ordersControllers.getOrderHistoriesTransactedWithAmazonCredit
+);
+
 module.exports = router;

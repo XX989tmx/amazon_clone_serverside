@@ -196,5 +196,32 @@ const getAllOrderHistory = async (req, res, next) => {
   res.json({ orders, totalCountOfOrders, totalItems });
 };
 
+const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
+  const userId = req.params.userId;
+  const orderId = req.params.orderId;
+
+  let orders;
+  try {
+    orders = await Order.find({ user: userId })
+      .where("isAmazonCreditUsed")
+      .equals(true);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!orders) {
+    const error = new Error("Error occurred. There is no order history.");
+    return next(error);
+  }
+
+  const totalCountOfOrders = orders.length;
+
+  res.status(200).json({
+    orders: orders.map((v) => v.toObject({ getters: true })),
+    totalCountOfOrders,
+  });
+};
+
 exports.createOrder = createOrder;
 exports.getAllOrderHistory = getAllOrderHistory;
+exports.getOrderHistoriesTransactedWithAmazonCredit = getOrderHistoriesTransactedWithAmazonCredit;
