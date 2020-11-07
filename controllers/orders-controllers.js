@@ -72,9 +72,24 @@ const createOrder = async (req, res, next) => {
 const getAllOrderHistory = async (req, res, next) => {
   const userId = req.params.userId;
 
+  let perPage;
+  const currentPage = req.query.page || 1;
+  perPage = 5;
+  let totalItems;
+  let count;
+  try {
+    count = await Order.find({ user: userId }).countDocuments();
+  } catch (error) {
+    console.log(error);
+  }
+
+  totalItems = count;
+
   let orders;
   try {
-    orders = await Order.find({ user: userId });
+    orders = await Order.find({ user: userId })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
@@ -90,7 +105,7 @@ const getAllOrderHistory = async (req, res, next) => {
 
   const totalCountOfOrders = orders.length;
 
-  res.json({ orders, totalCountOfOrders });
+  res.json({ orders, totalCountOfOrders, totalItems });
 };
 
 exports.createOrder = createOrder;
