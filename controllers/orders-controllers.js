@@ -92,7 +92,7 @@ const createOrder = async (req, res, next) => {
     items: user.cart.items,
     totalPrice: user.cart.totalPrice,
     totalCount: user.cart.totalCount,
-    dateOrdered: new Date(Date.now()).toString(),
+    dateOrdered: new Date(),
     shipmentAddress: address,
     user: userId,
     nameOfPaymentMethod,

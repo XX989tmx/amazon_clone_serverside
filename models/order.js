@@ -10,7 +10,7 @@ const orderSchema = new Schema({
   ],
   totalPrice: { type: Number },
   totalCount: { type: Number },
-  dateOrdered: { type: String },
+  dateOrdered: { type: Date },
   shipmentAddress: { type: mongoose.Types.ObjectId, ref: "Address" },
   user: { type: mongoose.Types.ObjectId, ref: "User" },
   nameOfPaymentMethod: { type: String },
