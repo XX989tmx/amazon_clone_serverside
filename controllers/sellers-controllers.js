@@ -116,6 +116,14 @@ const login = async (req, res, next) => {
 
 const createProduct = async (req, res, next) => {
   const sellerId = req.params.sellerId;
+
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    const error = new Error("Invalid inputs.");
+    console.log(error);
+    return next(error);
+  }
+
   const {
     name,
     price,
@@ -276,7 +284,7 @@ const getAllProductOfThisSeller = async (req, res, next) => {
       "Product data was not found fot this seller. please try again."
     );
     return next(error);
-  };
+  }
 
   const countOfProducts = allProductOfThisSeller.length;
 

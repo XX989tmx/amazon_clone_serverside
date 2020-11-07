@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number },
-  deliveryDate: { type: String, required: true },
+  deliveryDate: { type: Date, required: true },
   brand: { type: String, required: true },
   parentCategory: [{ type: String }],
   ancestorCategories: [{ type: String }],

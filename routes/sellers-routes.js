@@ -21,7 +21,44 @@ router.post(
 
 router.post("/login", sellersControllers.login);
 
-router.post("/createProduct/:sellerId", sellersControllers.createProduct);
+router.post(
+  "/createProduct/:sellerId",
+  [
+    check("name").not().isEmpty().isLength({ max: 60 }).trim(),
+    check("price")
+      .not()
+      .isEmpty()
+      .isNumeric()
+      .isCurrency()
+      .isLength({ max: 60 })
+      .trim()
+      .toInt(),
+    check("deliveryDate").not().isEmpty().isDate().isLength({ max: 60 }).trim(),
+    check("brand").not().isEmpty().isLength({ max: 60 }).trim(),
+    check("parentCategory")
+      .not()
+      .isEmpty()
+      .isLength({ max: 30 })
+
+      .trim(),
+    check("ancestorCategories")
+      .not()
+      .isEmpty()
+      .isLength({ max: 30 })
+
+      .trim(),
+    check("categories").not().isEmpty().isLength({ max: 30 }).trim(),
+    check("stockQuantity")
+      .not()
+      .isEmpty()
+      .isNumeric()
+      .isLength({ max: 60 })
+      .trim()
+      .toInt(),
+    check("isStock").not().isEmpty().isBoolean().trim().toBoolean(),
+  ],
+  sellersControllers.createProduct
+);
 router.patch("/updateProduct/:productId", sellersControllers.updateProduct);
 
 router.delete(
