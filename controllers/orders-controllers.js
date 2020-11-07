@@ -198,13 +198,35 @@ const getAllOrderHistory = async (req, res, next) => {
 
 const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   const userId = req.params.userId;
-  const orderId = req.params.orderId;
+
+  let perPage;
+  const currentPage = req.query.page || 1;
+  perPage = 10;
+  let totalItems;
+  let count;
+
+  try {
+    count = await Order.find({ user: userId })
+      .where("isAmazonCreditUsed")
+      .equals(true)
+      .countDocuments();
+  } catch (error) {
+    console.log(error);
+  }
+  if (count === 0) {
+    const error = new Error("There is no data.");
+    return next(error);
+  }
+
+  totalItems = count;
 
   let orders;
   try {
     orders = await Order.find({ user: userId })
       .where("isAmazonCreditUsed")
-      .equals(true);
+      .equals(true)
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
@@ -219,6 +241,7 @@ const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   res.status(200).json({
     orders: orders.map((v) => v.toObject({ getters: true })),
     totalCountOfOrders,
+    totalItems,
   });
 };
 
