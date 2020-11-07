@@ -80,8 +80,13 @@ const getAllOrderHistory = async (req, res, next) => {
   try {
     count = await Order.find({ user: userId }).countDocuments();
   } catch (error) {
-    console.log(error);
+    return next(error);
   }
+
+//   if (count === 0) {
+//     const error = new Error("no data was found.");
+//     return next(error);
+//   }
 
   totalItems = count;
 
@@ -92,6 +97,7 @@ const getAllOrderHistory = async (req, res, next) => {
       .limit(perPage);
   } catch (error) {
     console.log(error);
+    return next(error);
   }
 
   console.log(orders);
