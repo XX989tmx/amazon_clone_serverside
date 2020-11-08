@@ -15,7 +15,7 @@ router.post(
 );
 
 router.delete(
-  "/removeProductFromWishlist/:userId/:productId/:wishlistId",
+  "/removeProductFromWishlist/:userId/:productId/:wishlistId/:idOfItemInWishlist",
   wishlistsControllers.removeProductFromWishlist
 );
 

@@ -68,7 +68,10 @@ const addProductToWishlist = async (req, res, next) => {
   });
   console.log(targetIndex);
 
-  user.wishlists[targetIndex].wishlist.push(productId);
+  user.wishlists[targetIndex].wishlist.push({
+    productId: productId,
+    dateAdded: new Date(),
+  });
 
   await user.save();
 
@@ -79,6 +82,7 @@ const removeProductFromWishlist = async (req, res, next) => {
   const userId = req.params.userId;
   const productId = req.params.productId;
   const wishlistId = req.params.wishlistId;
+  const idOfItemInWishlist = req.params.idOfItemInWishlist;
 
   let user;
   try {
@@ -100,7 +104,7 @@ const removeProductFromWishlist = async (req, res, next) => {
   });
   const IndexOfProductToRemove = user.wishlists[targetIndex].wishlist.findIndex(
     (v) => {
-      return v.toString() === productId.toString();
+      return v._id.toString() === idOfItemInWishlist.toString();
     }
   );
 
@@ -147,7 +151,7 @@ const getSpecificWishlist = async (req, res, next) => {
   try {
     user = await User.findById(userId).populate({
       path: "wishlists",
-      populate: { path: "wishlist" },
+      populate: { path: "wishlist", populate: { path: "productId" } },
     });
   } catch (error) {
     console.log(error);

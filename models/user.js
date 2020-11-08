@@ -29,7 +29,12 @@ const userSchema = new Schema({
   wishlists: [
     {
       name: { type: String },
-      wishlist: [{ type: mongoose.Types.ObjectId, ref: "Product" }],
+      wishlist: [
+        {
+          productId: { type: mongoose.Types.ObjectId, ref: "Product" },
+          dateAdded: { type: Date },
+        },
+      ],
       dateCreated: { type: Date },
     },
   ],
