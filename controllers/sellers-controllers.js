@@ -179,6 +179,13 @@ const createProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   const sellerId = req.params.sellerId;
   const productId = req.params.productId;
+
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    const error = new Error("Invalid inputs.");
+    return next(error);
+  }
+
   const {
     name,
     price,
