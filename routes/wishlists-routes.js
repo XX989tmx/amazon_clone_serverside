@@ -24,4 +24,9 @@ router.delete(
   wishlistsControllers.deleteWishlist
 );
 
+router.get(
+  "/getSpecificWishlist/:userId/:wishlistId",
+  wishlistsControllers.getSpecificWishlist
+);
+
 module.exports = router;
