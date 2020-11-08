@@ -111,6 +111,35 @@ const removeProductFromWishlist = async (req, res, next) => {
   res.json({ user });
 };
 
+const deleteWishlist = async (req, res, next) => {
+  const userId = req.params.userId;
+  const wishlistId = req.params.wishlistId;
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+
+  if (!user) {
+    const error = new Error("user was not found. failed to delete wishlist.");
+    return next(error);
+  }
+
+  const targetIndex = user.wishlists.findIndex((v) => {
+    return v._id.toString() === wishlistId.toString();
+  });
+  const wishlistDocument = user.wishlists[targetIndex];
+  await wishlistDocument.remove();
+
+  await user.save();
+
+  res.json({ user });
+};
+
 exports.createNewWishlist = createNewWishlist;
 exports.addProductToWishlist = addProductToWishlist;
 exports.removeProductFromWishlist = removeProductFromWishlist;
+exports.deleteWishlist = deleteWishlist;
