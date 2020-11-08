@@ -15,6 +15,16 @@ app.use(bodyParser.json());
 
 app.use(express.static("public/images"));
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE");
+  next();
+});
+
 app.use("/api/products", produtcsRoutes);
 // =====products route=====
 // /api/products/all  => productIndex
@@ -71,6 +81,15 @@ app.get("/", function (req, res) {
 // app.use("api/wishlists");
 // app.use("api/payments");
 // app.use("api/search");
+
+app.use((error, req, res, next) => {
+  if (res.headerSent) {
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({ message: error.message || "An unknown error occurred." });
+});
+
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-7slh6.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
