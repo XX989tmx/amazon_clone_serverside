@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
+const fs = require("fs");
 const produtcsRoutes = require("./routes/produtcs-routes");
 const usersRoutes = require("./routes/users-routes");
 const sellersRoutes = require("./routes/sellers-routes");
@@ -13,7 +14,7 @@ const paymentsRoutes = require("./routes/payments-routes");
 const app = express();
 app.use(bodyParser.json());
 
-app.use(express.static("public/images"));
+
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -24,6 +25,9 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE");
   next();
 });
+
+// app.use("/public/images",express.static(path.join("public/images")));
+app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 app.use("/api/products", produtcsRoutes);
 // =====products route=====

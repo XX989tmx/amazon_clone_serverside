@@ -1,5 +1,9 @@
 const express = require("express");
 const { check } = require("express-validator");
+const multer = require("multer");
+const fileUpload = require("../middleware/file-upload");
+
+const upload = multer({ dest: "uploads/images" });
 const sellersControllers = require("../controllers/sellers-controllers");
 
 const router = express.Router();
@@ -23,6 +27,7 @@ router.post("/login", sellersControllers.login);
 
 router.post(
   "/createProduct/:sellerId",
+  fileUpload.array("images", 10),
   [
     check("name").not().isEmpty().isLength({ max: 60 }).trim(),
     check("price")

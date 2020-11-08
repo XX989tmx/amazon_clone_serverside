@@ -13,6 +13,7 @@ const productSchema = new Schema({
   isStock: { type: Boolean },
   seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
   userCart: { type: mongoose.Types.ObjectId, ref: "User" },
+  images: [{ imageName: { type: String }, imageUrl: { type: String } }],
 });
 
 module.exports = mongoose.model("Product", productSchema);

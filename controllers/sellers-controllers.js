@@ -124,6 +124,8 @@ const createProduct = async (req, res, next) => {
     return next(error);
   }
 
+  const imageFiles = req.files;
+
   const {
     name,
     price,
@@ -147,12 +149,21 @@ const createProduct = async (req, res, next) => {
     stockQuantity,
     isStock,
     seller: sellerId,
+    images: [],
   });
+
+  for (let i = 0; i < imageFiles.length; i++) {
+    const element = imageFiles[i];
+    const filePath = element.path;
+    const imageName = "image" + (i + 1);
+    createdProduct.images.push({ imageName: imageName, imageUrl: filePath });
+  }
 
   try {
     await createdProduct.save();
   } catch (error) {
     console.log(error);
+    next(error);
   }
 
   let seller;
