@@ -145,7 +145,10 @@ const getSpecificWishlist = async (req, res, next) => {
 
   let user;
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).populate({
+      path: "wishlists",
+      populate: { path: "wishlist" },
+    });
   } catch (error) {
     console.log(error);
     next(error);
