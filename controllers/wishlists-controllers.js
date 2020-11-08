@@ -8,6 +8,13 @@ const createNewWishlist = async (req, res, next) => {
 
   const { nameOfWishlist } = req.body;
 
+  if (!nameOfWishlist) {
+    const error = new Error(
+      "No name is provided for whishlist. Name is required."
+    );
+    return next(error);
+  }
+
   let user;
   try {
     user = await User.findById(userId);
@@ -102,13 +109,26 @@ const removeProductFromWishlist = async (req, res, next) => {
   const targetIndex = user.wishlists.findIndex((v) => {
     return v._id.toString() === wishlistId.toString();
   });
+
+  let isIdMatched;
   const IndexOfProductToRemove = user.wishlists[targetIndex].wishlist.findIndex(
     (v) => {
-      return v._id.toString() === idOfItemInWishlist.toString();
+      if (v.productId.toString() !== productId.toString()) {
+        isIdMatched = false;
+        const error = new Error(
+          "Id does not match. failed to remove product from wishlist."
+        );
+        return next(error);
+      } else {
+        isIdMatched = true;
+      }
+      return v.productId.toString() === productId.toString();
     }
   );
 
-  user.wishlists[targetIndex].wishlist.splice(IndexOfProductToRemove, 1);
+  if (isIdMatched === true) {
+    user.wishlists[targetIndex].wishlist.splice(IndexOfProductToRemove, 1);
+  }
 
   await user.save();
 
