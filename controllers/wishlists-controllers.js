@@ -75,6 +75,16 @@ const addProductToWishlist = async (req, res, next) => {
   });
   console.log(targetIndex);
 
+  const duplicatedItems = user.wishlists[targetIndex].wishlist.filter((v) => {
+    return v.productId.toString() === productId.toString();
+  });
+  console.log(duplicatedItems);
+
+  if (duplicatedItems.length !== 0) {
+    const error = new Error("the same item is already in the wishlist.");
+    return next(error);
+  }
+
   user.wishlists[targetIndex].wishlist.push({
     productId: productId,
     dateAdded: new Date(),
@@ -110,23 +120,19 @@ const removeProductFromWishlist = async (req, res, next) => {
     return v._id.toString() === wishlistId.toString();
   });
 
-  let isIdMatched;
   const IndexOfProductToRemove = user.wishlists[targetIndex].wishlist.findIndex(
     (v) => {
-      if (v.productId.toString() !== productId.toString()) {
-        isIdMatched = false;
-        const error = new Error(
-          "Id does not match. failed to remove product from wishlist."
-        );
-        return next(error);
-      } else {
-        isIdMatched = true;
-      }
-      return v.productId.toString() === productId.toString();
+      return v._id.toString() === idOfItemInWishlist.toString();
     }
   );
+  console.log(IndexOfProductToRemove);
 
-  if (isIdMatched === true) {
+  if (IndexOfProductToRemove === -1) {
+    const error = new Error(
+      "Id does not match. Failed to remove item from wishlist."
+    );
+    return next(error);
+  } else {
     user.wishlists[targetIndex].wishlist.splice(IndexOfProductToRemove, 1);
   }
 
