@@ -78,6 +78,7 @@ const signup = async (req, res, next) => {
       amazonPoint: 0,
       amazonCredit: 0,
     },
+    wishlists:[]
   });
 
   try {

@@ -26,6 +26,13 @@ const userSchema = new Schema({
     amazonPoint: { type: Number },
     amazonCredit: { type: Number },
   },
+  wishlists: [
+    {
+      name: { type: String },
+      wishlist: [{ type: mongoose.Types.ObjectId, ref: "Product" }],
+      dateCreated: { type: Date },
+    },
+  ],
 });
 
 userSchema.plugin(mongooseUniqueValidator);
