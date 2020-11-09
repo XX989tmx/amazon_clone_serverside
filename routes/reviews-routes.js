@@ -11,4 +11,9 @@ router.post(
 
 router.patch("/updateReview/:reviewId", reviewsControllers.updateReview);
 
+router.delete(
+  "/deleteReview/:userId/:reviewId/:productId",
+  reviewsControllers.deleteReview
+);
+
 module.exports = router;

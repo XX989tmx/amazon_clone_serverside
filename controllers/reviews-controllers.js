@@ -44,7 +44,7 @@ const CreateNewReviewToProduct = async (req, res, next) => {
     content: content,
     dateCreated: new Date(),
     product: productId,
-    userId: userId,
+    user: userId,
   });
 
   await createdReview.save();
@@ -76,7 +76,7 @@ const updateReview = async (req, res, next) => {
   if (!existingReview) {
     const error = new Error("Error occurred. Review was not found.");
     return next(error);
-  };
+  }
 
   // Authorization here
 
@@ -96,5 +96,59 @@ const updateReview = async (req, res, next) => {
     .json({ existingReview, message: "successfully updated review." });
 };
 
+const deleteReview = async (req, res, next) => {
+  const userId = req.params.userId;
+  const productId = req.params.productId;
+  const reviewId = req.params.reviewId;
+  console.log(reviewId);
+
+  let review;
+  try {
+    review = await Review.findById(reviewId);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("Error occurred. user was not found.");
+    return next(error);
+  }
+
+  let product;
+  try {
+    product = await Product.findById(productId);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!product) {
+    const error = new Error("Error occurred. Product data was not found.");
+    console.log(error);
+    return next(error);
+  }
+  console.log(user.reviews);
+  await user.reviews.pull(reviewId);
+  await user.save();
+
+  console.log(product.reviews);
+  await product.reviews.pull(reviewId);
+  await product.save();
+
+  await review.remove();
+
+  res.status(200).json({ user, message: "review was successfully removed." });
+};
+
 exports.CreateNewReviewToProduct = CreateNewReviewToProduct;
 exports.updateReview = updateReview;
+exports.deleteReview = deleteReview;
