@@ -26,6 +26,8 @@ router.post(
 
 router.post("/login", sellersControllers.login);
 
+router.use(checkAuthSellerId);
+
 router.post(
   "/createProduct/:sellerId",
   fileUpload.array("images", 10),
@@ -66,11 +68,9 @@ router.post(
   sellersControllers.createProduct
 );
 
-
-router.use(checkAuthSellerId);
-
 router.patch(
-  "/updateProduct/:productId",fileUpload.array("images",10),
+  "/updateProduct/:productId",
+  fileUpload.array("images", 10),
   [
     check("name").not().isEmpty().isLength({ max: 60 }).trim(),
     check("price")
