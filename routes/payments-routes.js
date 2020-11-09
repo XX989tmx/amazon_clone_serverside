@@ -5,12 +5,12 @@ const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
+router.use(checkAuth);
+
 router.get(
   "/getAllAmazonCreditPurchaseHistory/:userId",
   paymentsControllers.getAllAmazonCreditPurchaseHistory
 );
-
-router.use(checkAuth);
 
 router.post(
   "/chargeAmazonCredit/:userId",
