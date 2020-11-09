@@ -239,6 +239,19 @@ const updateProduct = async (req, res, next) => {
   product.categories = categories;
   product.stockQuantity = stockQuantity;
   product.isStock = isStock;
+  const existingImages = product.images;
+
+  product.images = [];
+
+  //image
+  const imageFiles = req.files;
+
+  for (let i = 0; i < imageFiles.length; i++) {
+    const element = imageFiles[i];
+    const filePath = element.path;
+    const imageName = "image" + (i + 1);
+    product.images.push({ imageName: imageName, imageUrl: filePath });
+  }
 
   try {
     await product.save();
