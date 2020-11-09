@@ -11,6 +11,7 @@ const ordersRoutes = require("./routes/orders-routes");
 const addressesRoutes = require("./routes/addresses-routes");
 const paymentsRoutes = require("./routes/payments-routes");
 const wishlistsRoutes = require("./routes/wishlists-routes");
+const reviewsRoutes = require("./routes/reviews-routes");
 
 const app = express();
 app.use(bodyParser.json());
@@ -53,6 +54,8 @@ app.use("/api/wishlists",wishlistsRoutes)
 app.use("/api/sellers", sellersRoutes);
 
 app.use("/api/payments", paymentsRoutes);
+
+app.use("/api/reviews",reviewsRoutes)
 
 app.get("/", function (req, res) {
   res.json({ res: "this is home page" });

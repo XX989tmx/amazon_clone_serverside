@@ -41,6 +41,7 @@ const userSchema = new Schema({
   amazonCreditOrders: [
     { type: mongoose.Types.ObjectId, ref: "AmazonCreditOrder" },
   ],
+  reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
 });
 
 userSchema.plugin(mongooseUniqueValidator);

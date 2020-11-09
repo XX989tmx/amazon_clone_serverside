@@ -79,7 +79,8 @@ const signup = async (req, res, next) => {
       amazonCredit: 0,
     },
     wishlists: [],
-    amazonCreditOrders:[],
+    amazonCreditOrders: [],
+    reviews:[],
   });
 
   try {
