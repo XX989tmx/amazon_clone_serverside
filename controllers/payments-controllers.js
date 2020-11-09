@@ -237,32 +237,46 @@ const chargeAmazonCredit = async (req, res, next) => {
 const getAllAmazonCreditPurchaseHistory = async (req, res, next) => {
   const userId = req.params.userId;
 
-  let user;
+  let perPage;
+  const currentPage = req.query.page || 1;
+
+  perPage = 15;
+
+  let totalItems;
+  let count;
+
   try {
-    user = await User.findById(userId).populate({path: "amazonCreditOrders"});
+    count = await AmazonCreditOrder.find({ user: userId }).countDocuments();
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+  totalItems = count;
+
+  let amazonCreditOrders;
+  try {
+    amazonCreditOrders = await AmazonCreditOrder.find({ user: userId }).skip(
+      (currentPage - 1) * perPage
+    );
   } catch (error) {
     console.log(error);
     return next(error);
   }
 
-  if (!user) {
-    const error = new Error("User was not found. please try again.");
+  if (!amazonCreditOrders) {
+    const error = new Error("No amazon credit order Data was found.");
     return next(error);
   }
 
-  const amazonCreditOrderHistories = user.amazonCreditOrders;
+  const countOfOrders = amazonCreditOrders.length;
 
-  if (!amazonCreditOrderHistories) {
-    const error = new Error("Error occurred. Failed to load data.");
-    return next(error);
-  }
-
-  if (amazonCreditOrderHistories.length === 0) {
-    const error = new Error("You do not have order history.");
-    return next(error);
-  }
-
-  res.status(200).json({ amazonCreditOrderHistories });
+  res.status(200).json({
+    amazonCreditOrders: amazonCreditOrders.map((v) =>
+      v.toObject({ getters: true })
+    ),
+    countOfOrders,
+    totalItems,
+  });
 };
 
 exports.addNewCreditCard = addNewCreditCard;
