@@ -6,7 +6,12 @@ const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
+router.use(checkAuth);
 
+router.post(
+  "/createNewWishlist/:userId",
+  wishlistsControllers.createNewWishlist
+);
 
 router.post(
   "/addProductToWishlist/:userId/:productId/:wishlistId",
@@ -26,13 +31,6 @@ router.delete(
 router.get(
   "/getSpecificWishlist/:userId/:wishlistId",
   wishlistsControllers.getSpecificWishlist
-);
-
-router.use(checkAuth);
-
-router.post(
-  "/createNewWishlist/:userId",
-  wishlistsControllers.createNewWishlist
 );
 
 module.exports = router;
