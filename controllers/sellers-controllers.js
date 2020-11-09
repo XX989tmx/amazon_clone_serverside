@@ -53,7 +53,7 @@ const signup = async (req, res, next) => {
   let token;
   try {
     token = await jsonwebtoken.sign(
-      { userId: createdSeller.id, email: createdSeller.email },
+      { sellerId: createdSeller.id, email: createdSeller.email },
       process.env.JWT_KEY,
       { expiresIn: "1h" }
     );
@@ -99,7 +99,7 @@ const login = async (req, res, next) => {
   let token;
   try {
     token = await jsonwebtoken.sign(
-      { userId: existingSeller.id, email: existingSeller.email },
+      { sellerId: existingSeller.id, email: existingSeller.email },
       process.env.JWT_KEY,
       { expiresIn: "1h" }
     );
@@ -241,6 +241,7 @@ const updateProduct = async (req, res, next) => {
 };
 
 const deleteProduct = async (req, res, next) => {
+  console.log(req);
   const sellerId = req.params.sellerId;
   const productId = req.params.productId;
 
@@ -266,6 +267,13 @@ const deleteProduct = async (req, res, next) => {
 
   if (!product) {
     const error = new Error("Specified product was not found.");
+    return next(error);
+  }
+
+  if (product.seller.toString() !== req.sellerData.sellerId.toString()) {
+    const error = new Error(
+      "Authorization failed. you are not allowed to delete thi data."
+    );
     return next(error);
   }
 

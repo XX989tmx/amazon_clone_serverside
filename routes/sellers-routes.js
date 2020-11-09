@@ -2,6 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 const multer = require("multer");
 const fileUpload = require("../middleware/file-upload");
+const checkAuthSellerId = require("../middleware/check-auth-seller-id");
 
 const upload = multer({ dest: "uploads/images" });
 const sellersControllers = require("../controllers/sellers-controllers");
@@ -92,6 +93,8 @@ router.patch(
   ],
   sellersControllers.updateProduct
 );
+
+router.use(checkAuthSellerId)
 
 router.delete(
   "/deleteProduct/:sellerId/:productId",
