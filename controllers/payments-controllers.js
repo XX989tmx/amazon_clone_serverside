@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const CreditCard = require("../models/credit-card");
+const AmazonCreditOrder = require("../models/amazon-credit-order");
 
 const addNewCreditCard = async (req, res, next) => {
   const userId = req.userData.userId;
@@ -167,6 +168,73 @@ const deleteCreditCard = async (req, res, next) => {
   res.json({ user });
 };
 
+const chargeAmazonCredit = async (req, res, next) => {
+  const { amount, paymentMethod } = req.body;
+  const selectedPrice = req.query.selectedPrice;
+  const userId = req.params.userId;
+
+  let orderedPrice;
+
+  if (amount) {
+    orderedPrice = Number(amount);
+  } else if (selectedPrice) {
+    switch (selectedPrice) {
+      case "5000":
+        orderedPrice = 5000;
+        break;
+      case "20000":
+        orderedPrice = 20000;
+        break;
+      case "40000":
+        orderedPrice = 40000;
+        break;
+      case "90000":
+        orderedPrice = 90000;
+        break;
+
+      default:
+        orderedPrice = 20000;
+        break;
+    }
+  } else {
+    orderedPrice = 20000;
+  }
+
+  const createdAmazonCreditOrder = new AmazonCreditOrder({
+    totalPrice: orderedPrice,
+    dateOrdered: new Date(),
+    paymentMethod: paymentMethod,
+    user: userId,
+  });
+
+  await createdAmazonCreditOrder.save();
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("Error occurred. user data was not found.");
+    return next(error);
+  }
+
+  const existingAmazonCreditAmount = user.wallet.amazonCredit;
+  const updatedAmazonCreditAmount = existingAmazonCreditAmount + orderedPrice;
+
+  user.wallet.amazonCredit = updatedAmazonCreditAmount;
+
+  await user.amazonCreditOrders.push(createdAmazonCreditOrder);
+
+  await user.save();
+
+  res.json({ user, createdAmazonCreditOrder });
+};
+
 exports.addNewCreditCard = addNewCreditCard;
 exports.updateCreditCard = updateCreditCard;
 exports.deleteCreditCard = deleteCreditCard;
+exports.chargeAmazonCredit = chargeAmazonCredit;

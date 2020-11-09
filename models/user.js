@@ -38,6 +38,9 @@ const userSchema = new Schema({
       dateCreated: { type: Date },
     },
   ],
+  amazonCreditOrders: [
+    { type: mongoose.Types.ObjectId, ref: "AmazonCreditOrder" },
+  ],
 });
 
 userSchema.plugin(mongooseUniqueValidator);
