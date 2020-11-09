@@ -24,7 +24,14 @@ router.post(
   sellersControllers.signup
 );
 
-router.post("/login", sellersControllers.login);
+router.post(
+  "/login",
+  [
+    check("email").normalizeEmail().isEmail(),
+    check("password").isLength({ min: 12, max: 60 }),
+  ],
+  sellersControllers.login
+);
 
 router.use(checkAuthSellerId);
 

@@ -66,6 +66,13 @@ const signup = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty() !== true) {
+    console.log(errors);
+    const error = new Error("Invalid inputs. please check your input again.");
+    return next(error);
+  }
+
   const { email, password } = req.body;
 
   let existingSeller;
