@@ -234,7 +234,39 @@ const chargeAmazonCredit = async (req, res, next) => {
   res.json({ user, createdAmazonCreditOrder });
 };
 
+const getAllAmazonCreditPurchaseHistory = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  let user;
+  try {
+    user = await User.findById(userId).populate({path: "amazonCreditOrders"});
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("User was not found. please try again.");
+    return next(error);
+  }
+
+  const amazonCreditOrderHistories = user.amazonCreditOrders;
+
+  if (!amazonCreditOrderHistories) {
+    const error = new Error("Error occurred. Failed to load data.");
+    return next(error);
+  }
+
+  if (amazonCreditOrderHistories.length === 0) {
+    const error = new Error("You do not have order history.");
+    return next(error);
+  }
+
+  res.status(200).json({ amazonCreditOrderHistories });
+};
+
 exports.addNewCreditCard = addNewCreditCard;
 exports.updateCreditCard = updateCreditCard;
 exports.deleteCreditCard = deleteCreditCard;
 exports.chargeAmazonCredit = chargeAmazonCredit;
+exports.getAllAmazonCreditPurchaseHistory = getAllAmazonCreditPurchaseHistory;
