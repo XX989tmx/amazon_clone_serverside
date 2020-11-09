@@ -140,6 +140,13 @@ const deleteAddress = async (req, res, next) => {
     return next(error);
   }
 
+  if (address.user.toString() !== req.userData.userId) {
+    const error = new Error(
+      "Authorization failed. You are not allowed to delete this data."
+    );
+    return next(error);
+  }
+
   try {
     await user.addresses.pull(addressId);
     await user.save();
