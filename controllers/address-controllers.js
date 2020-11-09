@@ -89,7 +89,14 @@ const updateAddress = async (req, res, next) => {
   }
 
   if (!existingAddress) {
-    const error = new Error("Address wa not found.");
+    const error = new Error("Address was not found.");
+    return next(error);
+  }
+
+  if (existingAddress.user.toString() !== req.userData.userId) {
+    const error = new Error(
+      "Authorization failed. you are not allowed to edit this data."
+    );
     return next(error);
   }
 
