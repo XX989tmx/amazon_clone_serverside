@@ -65,8 +65,12 @@ router.post(
   ],
   sellersControllers.createProduct
 );
+
+
+router.use(checkAuthSellerId);
+
 router.patch(
-  "/updateProduct/:productId",
+  "/updateProduct/:productId",fileUpload.array("images",10),
   [
     check("name").not().isEmpty().isLength({ max: 60 }).trim(),
     check("price")
@@ -93,8 +97,6 @@ router.patch(
   ],
   sellersControllers.updateProduct
 );
-
-router.use(checkAuthSellerId)
 
 router.delete(
   "/deleteProduct/:sellerId/:productId",

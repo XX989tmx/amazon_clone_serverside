@@ -188,6 +188,7 @@ const createProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
+  console.log(req);
   const sellerId = req.params.sellerId;
   const productId = req.params.productId;
 
@@ -218,6 +219,14 @@ const updateProduct = async (req, res, next) => {
 
   if (!product) {
     const error = new Error("Specified product data was not found.");
+    return next(error);
+  }
+
+  //Authorization
+  if (product.seller.toString() !== req.sellerData.sellerId.toString()) {
+    const error = new Error(
+      "Authorization failed. you are not allowed to edit this data."
+    );
     return next(error);
   }
 
