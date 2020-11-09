@@ -9,4 +9,6 @@ router.post(
   reviewsControllers.CreateNewReviewToProduct
 );
 
+router.patch("/updateReview/:reviewId", reviewsControllers.updateReview);
+
 module.exports = router;
