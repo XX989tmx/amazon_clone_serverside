@@ -78,7 +78,7 @@ const signup = async (req, res, next) => {
       amazonPoint: 0,
       amazonCredit: 0,
     },
-    wishlists:[]
+    wishlists: [],
   });
 
   try {
@@ -112,6 +112,13 @@ const signup = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty() !== true) {
+    console.log(errors);
+    const error = new Error("Invalid inputs. please check you input again.");
+    return next(error);
+  }
+
   const { email, password } = req.body;
 
   //   const existinguser = {
