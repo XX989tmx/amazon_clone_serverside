@@ -1,6 +1,10 @@
 const jsonwebtoken = require("jsonwebtoken");
 
 module.exports = function checkAuth(req, res, next) {
+
+  if (req.method === "OPTIONS") {
+    return next();
+  }
   const token = req.query.token;
   console.log(token);
   if (!token) {
