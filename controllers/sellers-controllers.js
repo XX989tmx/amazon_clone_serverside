@@ -124,7 +124,13 @@ const login = async (req, res, next) => {
   //   if (password !== existingSeller.password) {
   //     return next(new Error("password is incorrect"));
   //   }
-  res.json({ existingSeller, token, msg: "succsessfully loggedin" });
+  res.json({
+    name: existingSeller.name,
+    email: existingSeller.email,
+    sellerId: existingSeller.id,
+    token,
+    msg: "succsessfully loggedin",
+  });
 };
 
 const createProduct = async (req, res, next) => {
