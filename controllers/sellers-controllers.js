@@ -67,7 +67,7 @@ const signup = async (req, res, next) => {
     sellerId: createdSeller.id,
     email: createdSeller.email,
     token,
-    msg: "successfully signed up",
+    message: "successfully signed up",
   });
 };
 
@@ -129,7 +129,7 @@ const login = async (req, res, next) => {
     email: existingSeller.email,
     sellerId: existingSeller.id,
     token,
-    msg: "succsessfully loggedin",
+    message: "succsessfully loggedin",
   });
 };
 
@@ -203,6 +203,7 @@ const createProduct = async (req, res, next) => {
   res.json({
     createdProduct: createdProduct.toObject({ getters: true }),
     seller,
+    message: "商品データが正常に保存されました",
   });
 };
 
