@@ -62,7 +62,13 @@ const signup = async (req, res, next) => {
   }
   console.log(token);
 
-  res.json({ createdSeller, token, msg: "successfully signed up" });
+  res.json({
+    name: createdSeller.name,
+    sellerId: createdSeller.id,
+    email: createdSeller.email,
+    token,
+    msg: "successfully signed up",
+  });
 };
 
 const login = async (req, res, next) => {
