@@ -67,7 +67,7 @@ const addProductToWishlist = async (req, res, next) => {
 
   let user;
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).select("-password");
   } catch (error) {
     console.log(error);
     next(error);
@@ -102,7 +102,7 @@ const addProductToWishlist = async (req, res, next) => {
 
   await user.save();
 
-  res.json({ user });
+  res.json({ user, message: "商品をウィッシュリストに追加しました。" });
 };
 
 const removeProductFromWishlist = async (req, res, next) => {
