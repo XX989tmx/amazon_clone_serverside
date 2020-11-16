@@ -199,6 +199,13 @@ const addToCart = async (req, res, next) => {
   const { quantity } = req.body;
   const userId = req.params.userId;
 
+  const errors = validationResult(req);
+  if (errors.isEmpty() !== true) {
+    console.log(errors);
+    const error = new Error("Invalid inputs. please check your input again.");
+    return next(error);
+  }
+
   //   const productToAdd = {
   //     productId,
   //     quantity,
@@ -254,7 +261,7 @@ const addToCart = async (req, res, next) => {
   product.userCart = userId;
   await product.save();
 
-  res.json({ cart: user.cart });
+  res.json({ cart: user.cart, message: "商品がカートに追加されました。" });
 };
 
 const clearCart = async (req, res, next) => {
