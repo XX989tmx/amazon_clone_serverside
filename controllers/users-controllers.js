@@ -262,7 +262,7 @@ const clearCart = async (req, res, next) => {
 
   let user;
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).select("-password");
   } catch (error) {
     console.log(error);
   }
@@ -279,7 +279,7 @@ const clearCart = async (req, res, next) => {
     console.log(error);
   }
 
-  res.json({ user, msg: "cart was emptied" });
+  res.json({ user, message: "カートの中身が空になりました。" });
 };
 
 const getLatestContentOfCart = async (req, res, next) => {
