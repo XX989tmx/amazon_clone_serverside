@@ -156,7 +156,7 @@ const getAllOrderHistory = async (req, res, next) => {
 
   let perPage;
   const currentPage = req.query.page || 1;
-  perPage = 5;
+  perPage = 16;
   let totalItems;
   let count;
   try {
@@ -175,6 +175,7 @@ const getAllOrderHistory = async (req, res, next) => {
   let orders;
   try {
     orders = await Order.find({ user: userId })
+      .populate({ path: "items", populate: { path: "productId" } })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
