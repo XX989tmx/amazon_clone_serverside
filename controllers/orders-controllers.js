@@ -246,6 +246,28 @@ const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   });
 };
 
+const getLatestOrderData = async (req, res, next) => {
+  const userId = req.params.userId;
+  const orderId = req.params.orderId;
+
+  //直近のOrderデータを取得。
+  let orderData;
+  try {
+    orderData = await Order.findById(orderId);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!orderData) {
+    const error = new Error("error occurred. failed to get order data.");
+    return next(error);
+  }
+
+  res.status(200).json({ orderData: orderData.toObject({ getters: true }) ,message:"注文が確定されました。ご利用ありがとうございました。"});
+};
+
 exports.createOrder = createOrder;
 exports.getAllOrderHistory = getAllOrderHistory;
 exports.getOrderHistoriesTransactedWithAmazonCredit = getOrderHistoriesTransactedWithAmazonCredit;
+exports.getLatestOrderData = getLatestOrderData;

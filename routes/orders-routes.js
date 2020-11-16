@@ -15,4 +15,9 @@ router.get(
   ordersControllers.getOrderHistoriesTransactedWithAmazonCredit
 );
 
+router.get(
+  "/getLatestOrderData/:orderId",
+  ordersControllers.getLatestOrderData
+);
+
 module.exports = router;
