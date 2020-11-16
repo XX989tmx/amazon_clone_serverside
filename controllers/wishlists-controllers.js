@@ -1,8 +1,17 @@
+const { validationResult } = require("express-validator");
 const expressValidator = require("express-validator");
+const { validate } = require("uuid");
 const { remove } = require("../models/user");
 const User = require("../models/user");
 
 const createNewWishlist = async (req, res, next) => {
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() !== true) {
+  //   console.log(errors);
+  //   const error = new Error("Invalid inputs. please check your input again.");
+  //   return next(error);
+  // }
+
   const userId = req.params.userId;
   const productId = req.params.productId;
 
@@ -47,6 +56,7 @@ const createNewWishlist = async (req, res, next) => {
 
   res.json({
     wishlists: user.wishlists.map((v) => v.toObject({ getters: true })),
+    message: "ウィッシュリストが作成されました。",
   });
 };
 
