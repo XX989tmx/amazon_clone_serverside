@@ -267,6 +267,11 @@ const clearCart = async (req, res, next) => {
     console.log(error);
   }
 
+  if (!user) {
+    const error = new Error("Error occurred. Could not find cart data.");
+    return next(error);
+  }
+
   user.cart = {
     items: [],
     totalPrice: 0,
