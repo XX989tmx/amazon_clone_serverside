@@ -253,7 +253,10 @@ const getLatestOrderData = async (req, res, next) => {
   //直近のOrderデータを取得。
   let orderData;
   try {
-    orderData = await Order.findById(orderId);
+    orderData = await Order.findById(orderId).populate({
+      path: "items",
+      populate: { path: "productId" },
+    });
   } catch (error) {
     console.log(error);
     return next(error);
@@ -264,7 +267,12 @@ const getLatestOrderData = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({ orderData: orderData.toObject({ getters: true }) ,message:"注文が確定されました。ご利用ありがとうございました。"});
+  res
+    .status(200)
+    .json({
+      orderData: orderData.toObject({ getters: true }),
+      message: "注文が確定されました。ご利用ありがとうございました。",
+    });
 };
 
 exports.createOrder = createOrder;
