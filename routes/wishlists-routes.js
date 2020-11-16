@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.use(checkAuth);
 
+router.get("/getAllWishlists/:userId", wishlistsControllers.getAllWishlist);
+
 router.post(
   "/createNewWishlist/:userId",
   wishlistsControllers.createNewWishlist

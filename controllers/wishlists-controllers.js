@@ -208,8 +208,26 @@ const getSpecificWishlist = async (req, res, next) => {
   res.json({ targetWishlist, itemCountInWishlist });
 };
 
+const getAllWishlist = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  let user;
+  try {
+    user = await User.findById(userId).select("-password");
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  const wishlists = user.wishlists;
+  console.log(wishlists);
+
+  res.json({ wishlists: wishlists.map((v) => v.toObject({ getters: true })) });
+};
+
 exports.createNewWishlist = createNewWishlist;
 exports.addProductToWishlist = addProductToWishlist;
 exports.removeProductFromWishlist = removeProductFromWishlist;
 exports.deleteWishlist = deleteWishlist;
 exports.getSpecificWishlist = getSpecificWishlist;
+exports.getAllWishlist = getAllWishlist;
