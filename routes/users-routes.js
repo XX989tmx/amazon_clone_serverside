@@ -26,6 +26,8 @@ router.post(
 
 router.use(checkAuth);
 
+router.get("/getLatestContentOfCart/:userId",usersControllers.getLatestContentOfCart);
+
 router.post("/addToCart/:userId/:productId", usersControllers.addToCart);
 
 router.get("/clearCart/:userId", usersControllers.clearCart);

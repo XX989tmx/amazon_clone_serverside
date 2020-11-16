@@ -80,7 +80,7 @@ const signup = async (req, res, next) => {
     },
     wishlists: [],
     amazonCreditOrders: [],
-    reviews:[],
+    reviews: [],
   });
 
   try {
@@ -282,6 +282,29 @@ const clearCart = async (req, res, next) => {
   res.json({ user, msg: "cart was emptied" });
 };
 
+const getLatestContentOfCart = async (req, res, next) => {
+  // checkout pageでのFetch用
+  const userId = req.params.userId;
+  let user;
+  try {
+    user = await User.findById(userId)
+      .select("-password")
+      .populate({
+        path: "cart",
+        populate: { path: "items", populate: { path: "productId" } },
+      });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("Error Occurre. Failedd to get user data.");
+    return next(error);
+  }
+
+  res.status(200).json({ user: user.toObject({ getters: true }) });
+};
 // async function createOrder(params) {
 //   const userId = rew.params.userId;
 //   let user;
@@ -309,3 +332,4 @@ exports.signup = signup;
 exports.login = login;
 exports.addToCart = addToCart;
 exports.clearCart = clearCart;
+exports.getLatestContentOfCart = getLatestContentOfCart;
