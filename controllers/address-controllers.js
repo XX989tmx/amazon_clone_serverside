@@ -118,7 +118,9 @@ const updateAddress = async (req, res, next) => {
     console.log(error);
   }
 
-  res.json({ existingAddress });
+  const message = "住所が変更されました。";
+
+  res.json({ existingAddress, message: message });
 };
 
 const deleteAddress = async (req, res, next) => {
