@@ -56,7 +56,9 @@ const createAddress = async (req, res, next) => {
     console.log(error);
   }
 
-  res.json({ createdAddress, user });
+  const message = "新しい住所が登録されました。";
+
+  res.json({ createdAddress, message: message });
 };
 
 const updateAddress = async (req, res, next) => {
