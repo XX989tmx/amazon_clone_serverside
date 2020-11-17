@@ -170,6 +170,32 @@ const deleteAddress = async (req, res, next) => {
   res.json({ user });
 };
 
+const getAllAddress = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  let user;
+  try {
+    user = await User.findById(userId)
+      .select("-password")
+      .populate("addresses");
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("Error occurred. Failed to load data.");
+    return next(error);
+  }
+
+  const addresses = user.addresses;
+
+  res
+    .status(200)
+    .json({ addresses: addresses.map((v) => v.toObject({ getters: true })) });
+};
+
 exports.createAddress = createAddress;
 exports.updateAddress = updateAddress;
 exports.deleteAddress = deleteAddress;
+exports.getAllAddress = getAllAddress;

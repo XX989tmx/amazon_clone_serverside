@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.use(checkAuth);
 
+router.get("/getAllAddresses/:userId", addressControllers.getAllAddress);
+
 router.post(
   "/createAddress/:userId",
   [
