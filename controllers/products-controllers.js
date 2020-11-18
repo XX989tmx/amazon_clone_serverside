@@ -126,13 +126,14 @@ const getProductIndexByCategory = async (req, res, next) => {
 };
 
 const getProductIndexByParentCategory = async (req, res, next) => {
-  const parentCategory = req.params.parentCategory;
+  // pagination 24
+  const parentCategory = req.params.parentCategory; //クライアント側では,grandChildCategory
 
   const currentPage = req.query.page || 1;
   let perPage;
   let totalItems;
   let count;
-  perPage = 5;
+  perPage = 24;
   try {
     count = await Product.find({
       parentCategory: parentCategory,
