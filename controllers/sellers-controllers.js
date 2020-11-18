@@ -157,13 +157,15 @@ const createProduct = async (req, res, next) => {
     isStock,
   } = req.body;
 
+  const parsedAncestorsCategories = ancestorCategories.split(",");
+
   const createdProduct = new Product({
     name,
     price,
     deliveryDate,
     brand,
     parentCategory,
-    ancestorCategories,
+    ancestorCategories: parsedAncestorsCategories,
     categories,
     stockQuantity,
     isStock,
