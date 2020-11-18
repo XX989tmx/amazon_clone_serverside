@@ -77,7 +77,9 @@ const getSpecificProductById = async (req, res, next) => {
 };
 
 const getProductIndexByCategory = async (req, res, next) => {
-  const category = req.params.category;
+  // grandGrandChildCategory("categories":grandGrandChildCategory)に一致するproduct documentを配列の形で受け取る。pagination16 grandGrandChildCategoryIdをクエリにして、ドキュメントを検索。
+  // スキーマ上はcategories,クライアント側では、grandGrandChildCategory
+  const category = req.params.category; //grandGrandChildCategoryのこと
   let perPage;
   const currentPage = req.query.page || 1;
 
@@ -88,7 +90,7 @@ const getProductIndexByCategory = async (req, res, next) => {
   //   } else {
   //     perPage = 24;
   //   }
-  perPage = 5;
+  perPage = 16;
 
   let totalItems;
   let count;
