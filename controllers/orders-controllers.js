@@ -109,6 +109,9 @@ const createOrder = async (req, res, next) => {
       return next(error);
     }
     product.stockQuantity = existingQuantity - orderedQuantity;
+    if (product.stockQuantity === 0 && product.isStock === true) {
+      product.isStock = false;
+    }
     await product.save();
   }
 
