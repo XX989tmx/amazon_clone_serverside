@@ -225,12 +225,30 @@ const getProductIndexByAncestorCategory = async (req, res, next) => {
 const getProductIndexByBrand = async (req, res, next) => {
   const brand = req.params.brand;
 
+  let perPage;
+  const currentPage = req.query.page || 1;
+  perPage = 16;
+
+  let totalItems;
+  let count;
+
+  try {
+    count = await Product.find({ brand: brand }).countDocuments();
+  } catch (error) {
+    console.log(error);
+  }
+
+  totalItems = count;
+
   let products;
   try {
-    products = await Product.find({ brand: brand }).populate({
-      path: "seller",
-      select: "-select",
-    });
+    products = await Product.find({ brand: brand })
+      .populate({
+        path: "seller",
+        select: "-select",
+      })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
     return next(error);
@@ -241,9 +259,15 @@ const getProductIndexByBrand = async (req, res, next) => {
     return next(error);
   }
 
+  const countOfProducts = products.length;
+
   res
     .status(200)
-    .json({ products: products.map((v) => v.toObject({ getters: true })) });
+    .json({
+      products: products.map((v) => v.toObject({ getters: true })),
+      countOfProducts,
+      totalItems,
+    });
 };
 
 exports.getAllProducts = getAllProducts;
