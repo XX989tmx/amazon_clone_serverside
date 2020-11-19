@@ -63,7 +63,10 @@ const getSpecificProductById = async (req, res, next) => {
 
   let product;
   try {
-    product = await Product.findById(productId);
+    product = await Product.findById(productId).populate({
+      path: "seller",
+      select: "-password",
+    });
   } catch (error) {
     console.log(error);
   }
@@ -75,7 +78,9 @@ const getSpecificProductById = async (req, res, next) => {
 
   const specificProduct = [product];
 
-  res.json({ specificProduct: specificProduct.map((v) => v.toObject({ getters: true })) });
+  res.json({
+    specificProduct: specificProduct.map((v) => v.toObject({ getters: true })),
+  });
 };
 
 const getProductIndexByCategory = async (req, res, next) => {
@@ -107,6 +112,7 @@ const getProductIndexByCategory = async (req, res, next) => {
   let products;
   try {
     products = await Product.find({ categories: category })
+      .populate({ path: "seller", select: "-password" })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
@@ -148,6 +154,7 @@ const getProductIndexByParentCategory = async (req, res, next) => {
   let products;
   try {
     products = await Product.find({ parentCategory: parentCategory })
+      .populate({ path: "seller", select: "-password" })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
@@ -192,6 +199,7 @@ const getProductIndexByAncestorCategory = async (req, res, next) => {
   let products;
   try {
     products = await Product.find({ ancestorCategories: ancestorCategory })
+      .populate({ path: "seller", select: "-password" })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
