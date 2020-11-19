@@ -73,7 +73,9 @@ const getSpecificProductById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ product: product.toObject({ getters: true }) });
+  const specificProduct = [product];
+
+  res.json({ specificProduct: specificProduct.map((v) => v.toObject({ getters: true })) });
 };
 
 const getProductIndexByCategory = async (req, res, next) => {
@@ -168,9 +170,10 @@ const getProductIndexByParentCategory = async (req, res, next) => {
   });
 };
 
-const getProductIndexByAncestorCategory = async (req, res, next) => { // pagination 24
+const getProductIndexByAncestorCategory = async (req, res, next) => {
+  // pagination 24
   // クライアント側でいう、parentCategory, childCategoryによるクエリは、すべてここに送る。スキーマ上の、'ancestor categories'にクエリをかける。いずれかがマッチしたならそれでよい、ということで進める(すべて一つのfieldでまかなってしまう)。必要なら、parentCategory, childCategoryごとに、field,controller function, routeを追加する。
-  const ancestorCategory = req.params.ancestorCategory;// クライアント側でいう、parentCategory, or childCategoryのこと
+  const ancestorCategory = req.params.ancestorCategory; // クライアント側でいう、parentCategory, or childCategoryのこと
 
   let perPage;
   const currentPage = req.query.page || 1;
