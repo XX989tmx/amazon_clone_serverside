@@ -26,6 +26,11 @@ router.get(
   productsControllers.getProductIndexByAncestorCategory
 );
 
+router.get(
+  "/getProductIndexByBrand/:brand",
+  productsControllers.getProductIndexByBrand
+);
+
 router.post("/createNewProduct", function (req, res) {
   res.json({ res: "add new product page" });
 });

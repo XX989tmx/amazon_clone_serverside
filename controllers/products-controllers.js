@@ -222,8 +222,33 @@ const getProductIndexByAncestorCategory = async (req, res, next) => {
   });
 };
 
+const getProductIndexByBrand = async (req, res, next) => {
+  const brand = req.params.brand;
+
+  let products;
+  try {
+    products = await Product.find({ brand: brand }).populate({
+      path: "seller",
+      select: "-select",
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!products) {
+    const error = new Error("Error occurred. Failed to get data.");
+    return next(error);
+  }
+
+  res
+    .status(200)
+    .json({ products: products.map((v) => v.toObject({ getters: true })) });
+};
+
 exports.getAllProducts = getAllProducts;
 exports.getSpecificProductById = getSpecificProductById;
 exports.getProductIndexByCategory = getProductIndexByCategory;
 exports.getProductIndexByParentCategory = getProductIndexByParentCategory;
 exports.getProductIndexByAncestorCategory = getProductIndexByAncestorCategory;
+exports.getProductIndexByBrand = getProductIndexByBrand;
