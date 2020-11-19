@@ -88,6 +88,18 @@ const createOrder = async (req, res, next) => {
     totalDiscountAmount = totalDiscountAmount + amountOfAmazonCreditUsed;
   }
 
+  //各商品の在庫数を更新する。在庫数から注文個数分を引き、スキーマ保存。loop.
+  for (let i = 0; i < user.cart.items.length; i++) {
+    const itemInCart = user.cart.items[i];
+    const productId = itemInCart.productId;
+    const orderedQuantity = itemInCart.quantity;
+    let product;
+    product = await Product.findById(productId);
+    const existingQuantity = product.stockQuantity;
+    product.stockQuantity = existingQuantity - orderedQuantity;
+    await product.save();
+  }
+
   const createdOrder = new Order({
     items: user.cart.items,
     totalPrice: user.cart.totalPrice,
@@ -267,12 +279,10 @@ const getLatestOrderData = async (req, res, next) => {
     return next(error);
   }
 
-  res
-    .status(200)
-    .json({
-      orderData: orderData.toObject({ getters: true }),
-      message: "注文が確定されました。ご利用ありがとうございました。",
-    });
+  res.status(200).json({
+    orderData: orderData.toObject({ getters: true }),
+    message: "注文が確定されました。ご利用ありがとうございました。",
+  });
 };
 
 exports.createOrder = createOrder;
