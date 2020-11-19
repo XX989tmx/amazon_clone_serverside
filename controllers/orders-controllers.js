@@ -95,7 +95,19 @@ const createOrder = async (req, res, next) => {
     const orderedQuantity = itemInCart.quantity;
     let product;
     product = await Product.findById(productId);
+    if (!product) {
+      const error = new Error(
+        "エラーが発生しました。商品データの取得に失敗しました。"
+      );
+      return next(error);
+    }
     const existingQuantity = product.stockQuantity;
+    if (existingQuantity < orderedQuantity) {
+      const error = new Error(
+        "エラーが発生しました。注文点数が在庫数を超えています。"
+      );
+      return next(error);
+    }
     product.stockQuantity = existingQuantity - orderedQuantity;
     await product.save();
   }
