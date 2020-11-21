@@ -6,6 +6,9 @@ const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const Product = require("../models/product");
 const Order = require("../models/order");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);

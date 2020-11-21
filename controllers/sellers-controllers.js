@@ -5,6 +5,9 @@ const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 const Seller = require("../models/seller");
 const Product = require("../models/product");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);

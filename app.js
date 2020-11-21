@@ -12,6 +12,9 @@ const addressesRoutes = require("./routes/addresses-routes");
 const paymentsRoutes = require("./routes/payments-routes");
 const wishlistsRoutes = require("./routes/wishlists-routes");
 const reviewsRoutes = require("./routes/reviews-routes");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const app = express();
 app.use(bodyParser.json());

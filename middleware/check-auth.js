@@ -1,5 +1,7 @@
 const jsonwebtoken = require("jsonwebtoken");
-
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 module.exports = function checkAuth(req, res, next) {
 
   if (req.method === "OPTIONS") {
