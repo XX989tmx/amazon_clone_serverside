@@ -126,10 +126,30 @@ const getProductIndexByCategory = async (req, res, next) => {
 
   const countOfProducts = products.length;
 
+  const nextPage = +currentPage + 1;
+  const previousPage = +currentPage - 1;
+  const hasNextPage = perPage * +currentPage < totalItems;
+  const hasPreviousPage = +currentPage > 1;
+  const lastPage = Math.ceil(totalItems / perPage);
+
+  const pagination = {
+    currentPage: +currentPage,
+    perPage: perPage,
+    totalItems: totalItems,
+    nextPage: nextPage,
+    previousPage: previousPage,
+    hasNextPage: hasNextPage,
+    hasPreviousPage: hasPreviousPage,
+    lastPage: lastPage,
+  };
+
+  console.log(pagination);
+
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProducts,
     totalItems,
+    pagination,
   });
 };
 
@@ -261,13 +281,11 @@ const getProductIndexByBrand = async (req, res, next) => {
 
   const countOfProducts = products.length;
 
-  res
-    .status(200)
-    .json({
-      products: products.map((v) => v.toObject({ getters: true })),
-      countOfProducts,
-      totalItems,
-    });
+  res.status(200).json({
+    products: products.map((v) => v.toObject({ getters: true })),
+    countOfProducts,
+    totalItems,
+  });
 };
 
 exports.getAllProducts = getAllProducts;
