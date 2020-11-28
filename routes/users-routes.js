@@ -44,4 +44,9 @@ router.delete(
   usersControllers.removeItemFromCart
 );
 
+router.patch(
+  "/changeQuantityOfItemInCart/:userId/:itemId",
+  usersControllers.changeQuantityOfItemInCart
+);
+
 module.exports = router;

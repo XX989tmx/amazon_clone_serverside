@@ -386,6 +386,79 @@ const removeItemFromCart = async (req, res, next) => {
 
   res.status(200).json({ user: user, message: message });
 };
+
+const changeQuantityOfItemInCart = async (req, res, next) => {
+  const userId = req.params.userId;
+  const itemId = req.params.itemId;
+
+  const { changedQuantity } = req.body;
+
+  let user;
+  try {
+    user = await User.findById(userId)
+      .select("password")
+      .populate({
+        path: "cart",
+        populate: { path: "items", populate: { path: "productId" } },
+      });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("Error occurred. Failed to load data.");
+    return next(error);
+  }
+
+  const cart = user.cart;
+  //現在のカートの総数と総額を取得
+  const totalCountOfItemInCart = cart.totalCount;
+  const totalPriceOdItemInCart = cart.totalPrice;
+
+  // find target item
+  let updateCandidate;
+  for (let i = 0; i < user.cart.items.length; i++) {
+    const item = user.cart.items[i];
+    if (item._id.toString() === itemId.toString()) {
+      updateCandidate = item;
+    }
+  }
+
+  // 既存のquantityを取得
+  const existingQuantity = updateCandidate.quantity;
+  console.log(existingQuantity);
+
+  const existingPrice = updateCandidate.productId.price;
+  const existingTotalPrice = existingPrice * existingQuantity;
+
+  // 変更された数量による影響額と個数を取得
+  const changedPrice = existingPrice * +changedQuantity;
+
+  // カートの総数と総額を更新
+
+  const temp =
+    Number(user.cart.totalCount) - +existingQuantity + +changedQuantity;
+  user.cart.totalCount = temp;
+
+  user.cart.totalPrice =
+    user.cart.totalPrice - existingTotalPrice + changedPrice;
+
+  // target itemを数量を更新
+  for (let i = 0; i < user.cart.items.length; i++) {
+    const item = user.cart.items[i];
+    if (item._id.toString() === itemId.toString()) {
+      user.cart.items[i].quantity = +changedQuantity;
+    }
+  }
+
+  // 保存
+  await user.save();
+
+  const message = "カート内商品の数量が変更されました";
+
+  res.status(200).json({ user, message });
+};
 // async function createOrder(params) {
 //   const userId = rew.params.userId;
 //   let user;
@@ -415,3 +488,4 @@ exports.addToCart = addToCart;
 exports.clearCart = clearCart;
 exports.getLatestContentOfCart = getLatestContentOfCart;
 exports.removeItemFromCart = removeItemFromCart;
+exports.changeQuantityOfItemInCart = changeQuantityOfItemInCart;
