@@ -320,6 +320,72 @@ const getLatestContentOfCart = async (req, res, next) => {
 
   res.status(200).json({ user: user.toObject({ getters: true }) });
 };
+
+const removeItemFromCart = async (req, res, next) => {
+  const itemId = req.params.itemId;
+  const userId = req.params.userId;
+
+  let user;
+  try {
+    user = await User.findById(userId)
+      .select("-password")
+      .populate({
+        path: "cart",
+        populate: { path: "items", populate: { path: "productId" } },
+      });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new Error("Error occurred. Data was not found.");
+    return next(error);
+  }
+
+  const cart = user.cart;
+
+  const totalCountOfItemInCart = cart.totalCount;
+  const totalPriceOfCart = cart.totalPrice;
+
+  const IndexOfDeleteCandidateItem = cart.items.findIndex(
+    (v, i) => v._id.toString() === itemId.toString()
+  );
+  const deleteCandidateItem = cart.items[IndexOfDeleteCandidateItem];
+  console.log(deleteCandidateItem);
+  const countOfDeleteCandidateItem = deleteCandidateItem.quantity;
+  console.log(countOfDeleteCandidateItem);
+  const priceOfDeleteCandidateItem = deleteCandidateItem.productId.price;
+  const totalPriceOfDeleteCandidateItem =
+    priceOfDeleteCandidateItem * countOfDeleteCandidateItem;
+
+  // カートの合計額と合計商品点数を更新する
+  const updatedTotalPriceOfCart =
+    totalPriceOfCart - totalPriceOfDeleteCandidateItem;
+
+  const updatedTotalCountOfCart =
+    totalCountOfItemInCart - countOfDeleteCandidateItem;
+
+  //合計額の更新
+  user.cart.totalPrice = updatedTotalPriceOfCart;
+  //合計点数の更新
+  user.cart.totalCount = updatedTotalCountOfCart;
+
+  // deleteCandidateをItems array から削除する
+  const targetIndex = user.cart.items.findIndex(
+    (v, i) => v.id.toString() === itemId.toString()
+  );
+  console.log(targetIndex);
+
+  user.cart.items.splice(targetIndex, 1);
+
+  // カートの更新完了
+  await user.save();
+
+  const message = "商品がカートから削除されました";
+
+  res.status(200).json({ user: user, message: message });
+};
 // async function createOrder(params) {
 //   const userId = rew.params.userId;
 //   let user;
@@ -348,3 +414,4 @@ exports.login = login;
 exports.addToCart = addToCart;
 exports.clearCart = clearCart;
 exports.getLatestContentOfCart = getLatestContentOfCart;
+exports.removeItemFromCart = removeItemFromCart;

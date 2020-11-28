@@ -39,4 +39,9 @@ router.post(
 
 router.get("/clearCart/:userId", usersControllers.clearCart);
 
+router.delete(
+  "/removeItemFromCart/:userId/:itemId",
+  usersControllers.removeItemFromCart
+);
+
 module.exports = router;
