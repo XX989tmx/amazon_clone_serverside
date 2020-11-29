@@ -306,8 +306,15 @@ const getLatestContentOfCart = async (req, res, next) => {
       .select("-password")
       .populate({
         path: "cart",
-        populate: { path: "items", populate: { path: "productId" } },
-      });
+        populate: {
+          path: "items",
+          populate: {
+            path: "productId",
+            populate: { path: "seller", select: "-password" },
+          },
+        },
+      })
+      .populate("addresses");
   } catch (error) {
     console.log(error);
     return next(error);
