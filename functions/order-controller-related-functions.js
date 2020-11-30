@@ -34,6 +34,10 @@ async function calculateTotalAmountOfPriceOfOrderOfAllTime(userId) {
       const order = orders[i];
       sum += order.totalPrice;
   }
+
+//   for (const { totalPrice } of orders) {
+//     sum += totalPrice;
+//   }
   
   return sum;
 }
