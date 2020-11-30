@@ -6,6 +6,23 @@ const Order = require("../models/order");
  * @param {number} price
  * @return {number}
  */
+async function getOrdersOfThisUser(userId) {
+  let orders;
+  try {
+    orders = await Order.find({ user: userId }).sort({ dateOrdered: "-1" });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!orders) {
+    const error = new Error("Error occurred. Failed to load data.");
+    return next(error);
+  }
+
+  return orders;
+}
+
 function calculateAcquirableAmazonPoint(price) {
   if (typeof price !== "number") {
     const error = new TypeError("Input is not a number");
@@ -16,18 +33,7 @@ function calculateAcquirableAmazonPoint(price) {
 }
 
 async function calculateTotalAmountOfPriceOfOrderOfAllTime(userId) {
-  let orders;
-  try {
-    orders = await Order.find({ user: userId });
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-
-  if (!orders) {
-    const error = new Error("Error occurred. Failed to load data.");
-    return next(error);
-  }
+  const orders = await getOrdersOfThisUser(userId);
 
   let sum = 0;
   for (let i = 0; i < orders.length; i++) {
@@ -43,18 +49,7 @@ async function calculateTotalAmountOfPriceOfOrderOfAllTime(userId) {
 }
 
 async function calculateTotalAmountOfPriceOfOrderOfThisMonth(userId) {
-  let orders;
-  try {
-    orders = await Order.find({ user: userId });
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-
-  if (!orders) {
-    const error = new Error("Error occurred. Failed to load data.");
-    return next(error);
-  }
+  const orders = await getOrdersOfThisUser(userId);
   let thisMonth = new Date().getMonth();
   let sum = 0;
 
@@ -75,18 +70,7 @@ async function calculateTotalAmountOfPriceOfOrderOfThisMonth(userId) {
 }
 
 async function getOrdersOfThisMonth(userId) {
-  let orders;
-  try {
-    orders = await Order.find({ user: userId });
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-
-  if (!orders) {
-    const error = new Error("Error occurred. Failed to load data.");
-    return next(error);
-  }
+  const orders = await getOrdersOfThisUser(userId);
 
   let ordersOfThisMonth = [];
   let thisMonth = new Date().getMonth();
@@ -106,3 +90,6 @@ async function getOrdersOfThisMonth(userId) {
 }
 
 exports.calculateAcquirableAmazonPoint = calculateAcquirableAmazonPoint;
+exports.calculateTotalAmountOfPriceOfOrderOfAllTime = calculateTotalAmountOfPriceOfOrderOfAllTime;
+exports.calculateTotalAmountOfPriceOfOrderOfThisMonth = calculateTotalAmountOfPriceOfOrderOfThisMonth;
+exports.getOrdersOfThisMonth = getOrdersOfThisMonth;
