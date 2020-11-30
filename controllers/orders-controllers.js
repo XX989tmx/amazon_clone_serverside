@@ -202,7 +202,7 @@ const getAllOrderHistory = async (req, res, next) => {
   let orders;
   try {
     orders = await Order.find({ user: userId })
-      .populate({ path: "items", populate: { path: "productId" } })
+      .populate({ path: "items", populate: { path: "productId" } }).sort({dateOrdered: "-1"})
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
@@ -252,7 +252,7 @@ const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   try {
     orders = await Order.find({ user: userId })
       .where("isAmazonCreditUsed")
-      .equals(true)
+      .equals(true).sort({dateOrdered: '-1'})
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
