@@ -1,6 +1,9 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const Address = require("../models/address");
+const {
+  setThisAddressAsDefaultAddress,
+} = require("../functions/address-controller-related-functions");
 
 const createAddress = async (req, res, next) => {
   const userId = req.params.userId;
@@ -40,6 +43,7 @@ const createAddress = async (req, res, next) => {
     phoneNumber,
     email,
     company,
+    isDefaultAddress: false,
   });
 
   try {
@@ -111,6 +115,7 @@ const updateAddress = async (req, res, next) => {
   existingAddress.phoneNumber = phoneNumber;
   existingAddress.email = email;
   existingAddress.company = company;
+  existingAddress.isDefaultAddress = false;
 
   try {
     await existingAddress.save();
@@ -199,7 +204,17 @@ const getAllAddress = async (req, res, next) => {
     .json({ addresses: addresses.map((v) => v.toObject({ getters: true })) });
 };
 
+const setDefaultAddress = async (req, res, next) => {
+  const addressId = req.params.addressId;
+  const userId = req.params.userId;
+
+  const result = await setThisAddressAsDefaultAddress(addressId);
+
+  res.status(200).json({ result });
+};
+
 exports.createAddress = createAddress;
 exports.updateAddress = updateAddress;
 exports.deleteAddress = deleteAddress;
 exports.getAllAddress = getAllAddress;
+exports.setDefaultAddress = setDefaultAddress;

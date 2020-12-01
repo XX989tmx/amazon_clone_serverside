@@ -55,4 +55,10 @@ router.delete(
   "/deleteAddress/:userId/:addressId",
   addressControllers.deleteAddress
 );
+
+router.get(
+  "/setDefaultAddress/:userId/:addressId",
+  addressControllers.setDefaultAddress
+);
+
 module.exports = router;

@@ -13,5 +13,6 @@ const addressSchema = new Schema({
   phoneNumber: { type: String, required: true },
   email: { type: String, required: true },
   company: { type: String },
+  isDefaultAddress: { type: Boolean },
 });
 module.exports = mongoose.model("Address", addressSchema);
