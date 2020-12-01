@@ -314,7 +314,7 @@ const getLatestContentOfCart = async (req, res, next) => {
           },
         },
       })
-      .populate("addresses");
+      .populate({ path: "addresses", match: { isDefaultAddress: true } });
   } catch (error) {
     console.log(error);
     return next(error);

@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Address = require("../models/address");
 const {
   setThisAddressAsDefaultAddress,
+  getAllOfRegisteredAddressesOfThisUser,
 } = require("../functions/address-controller-related-functions");
 
 const createAddress = async (req, res, next) => {
@@ -198,6 +199,8 @@ const getAllAddress = async (req, res, next) => {
   }
 
   const addresses = user.addresses;
+
+  // const addresses = await getAllOfRegisteredAddressesOfThisUser(userId);
 
   res
     .status(200)

@@ -54,5 +54,62 @@ async function setThisAddressAsDefaultAddress(addressId) {
   return result;
 }
 
+async function getDefaultAddress(userId) {
+  let defaultAddress;
+  try {
+    defaultAddress = await Address.find({
+      user: userId,
+      isDefaultAddress: true,
+    }).exec();
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!defaultAddress) {
+    const error = new Error("デフォルトの住所が存在しません");
+    return next(error);
+  }
+
+  return defaultAddress;
+}
+
+async function getNonDefaultAddress(userId) {
+  let nonDefaultAddresses;
+  try {
+    nonDefaultAddresses = await Address.find({
+      user: userId,
+      isDefaultAddress: false,
+    })
+      .sort({ _id: "-1" })
+      .exec();
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!nonDefaultAddresses) {
+    const error = new Error(
+      "エラーが発生しました。データの取得に失敗しました。"
+    );
+    return next(error);
+  }
+
+  return nonDefaultAddresses;
+}
+
+async function getAllOfRegisteredAddressesOfThisUser(userId) {
+  const defaultAddress = await getDefaultAddress(userId);
+
+  const nonDefaultAddresses = await getNonDefaultAddress(userId);
+
+  const addresses = [...defaultAddress, ...nonDefaultAddresses];
+
+  return addresses;
+}
+
 exports.isThisEmailInBlackList = isThisEmailInBlackList;
 exports.setThisAddressAsDefaultAddress = setThisAddressAsDefaultAddress;
+exports.getDefaultAddress = getDefaultAddress;
+exports.getNonDefaultAddress = getNonDefaultAddress;
+exports.getAllOfRegisteredAddressesOfThisUser = getAllOfRegisteredAddressesOfThisUser;
