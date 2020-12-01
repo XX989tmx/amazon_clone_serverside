@@ -7,6 +7,7 @@ const {
 } = require("../functions/products-controller-related-functions");
 const {
   countTotalCountOfOrders,
+  getAllOrdersOfThisUser,
 } = require("../functions/order-controller-related-functions");
 
 const createOrder = async (req, res, next) => {
@@ -196,26 +197,7 @@ const getAllOrderHistory = async (req, res, next) => {
 
   totalItems = count;
 
-  let orders;
-  try {
-    orders = await Order.find({ user: userId })
-      .populate({ path: "items", populate: { path: "productId" } })
-      .sort({ dateOrdered: "-1" })
-      .skip((currentPage - 1) * perPage)
-      .limit(perPage);
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-
-  console.log(orders);
-
-  if (!orders) {
-    const error = new Error(
-      "Error occurred. Failed to load order history data."
-    );
-    return next(error);
-  }
+  const orders = await getAllOrdersOfThisUser(userId, currentPage, perPage);
 
   const totalCountOfOrders = orders.length;
   const pagination = getPagination(currentPage, totalItems, perPage);

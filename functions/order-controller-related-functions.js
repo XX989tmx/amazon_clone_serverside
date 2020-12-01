@@ -100,8 +100,34 @@ async function countTotalCountOfOrders(userId) {
   return count;
 }
 
+async function getAllOrdersOfThisUser(userId, currentPage, perPage) {
+  let orders;
+  try {
+    orders = await Order.find({ user: userId })
+      .populate({ path: "items", populate: { path: "productId" } })
+      .sort({ dateOrdered: "-1" })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  console.log(orders);
+
+  if (!orders) {
+    const error = new Error(
+      "Error occurred. Failed to load order history data."
+    );
+    return next(error);
+  }
+
+  return orders;
+}
+
 exports.calculateAcquirableAmazonPoint = calculateAcquirableAmazonPoint;
 exports.calculateTotalAmountOfPriceOfOrderOfAllTime = calculateTotalAmountOfPriceOfOrderOfAllTime;
 exports.calculateTotalAmountOfPriceOfOrderOfThisMonth = calculateTotalAmountOfPriceOfOrderOfThisMonth;
 exports.getOrdersOfThisMonth = getOrdersOfThisMonth;
 exports.countTotalCountOfOrders = countTotalCountOfOrders;
+exports.getAllOrdersOfThisUser = getAllOrdersOfThisUser;
