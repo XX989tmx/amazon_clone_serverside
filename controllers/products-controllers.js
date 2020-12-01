@@ -242,10 +242,14 @@ const getProductIndexByAncestorCategory = async (req, res, next) => {
 
   const countOfProduct = products.length;
 
+  const pagination = getPagination(currentPage,totalItems,perPage);
+  console.log(pagination);
+
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProduct,
     totalItems,
+    pagination,
   });
 };
 
@@ -288,10 +292,14 @@ const getProductIndexByBrand = async (req, res, next) => {
 
   const countOfProducts = products.length;
 
+  const pagination = getPagination(currentPage,totalItems,perPage);
+  console.log(pagination);
+
   res.status(200).json({
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProducts,
     totalItems,
+    pagination,
   });
 };
 
