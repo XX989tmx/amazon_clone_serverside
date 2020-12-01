@@ -2,6 +2,7 @@ const Order = require("../models/order");
 const User = require("../models/user");
 const Product = require("../models/product");
 const Address = require("../models/address");
+const { getPagination } = require("../functions/products-controller-related-functions");
 
 const createOrder = async (req, res, next) => {
   const userId = req.params.userId;
@@ -220,8 +221,10 @@ const getAllOrderHistory = async (req, res, next) => {
   }
 
   const totalCountOfOrders = orders.length;
+  const pagination = getPagination(currentPage,totalItems,perPage);
+  console.log(pagination);
 
-  res.json({ orders, totalCountOfOrders, totalItems });
+  res.json({ orders, totalCountOfOrders, totalItems, pagination });
 };
 
 const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
@@ -265,11 +268,14 @@ const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   }
 
   const totalCountOfOrders = orders.length;
+  const pagination = getPagination(currentPage,totalItems,perPage);
+  console.log(pagination);
 
   res.status(200).json({
     orders: orders.map((v) => v.toObject({ getters: true })),
     totalCountOfOrders,
     totalItems,
+    pagination,
   });
 };
 
