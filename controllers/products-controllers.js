@@ -1,5 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const {
+  getPagination,
+} = require("../functions/products-controller-related-functions");
 const Product = require("../models/product");
 
 const getAllProducts = async (req, res, next) => {
@@ -125,25 +128,26 @@ const getProductIndexByCategory = async (req, res, next) => {
   }
 
   const countOfProducts = products.length;
-
-  const nextPage = +currentPage + 1;
-  const previousPage = +currentPage - 1;
-  const hasNextPage = perPage * +currentPage < totalItems;
-  const hasPreviousPage = +currentPage > 1;
-  const lastPage = Math.ceil(totalItems / perPage);
-
-  const pagination = {
-    currentPage: +currentPage,
-    perPage: perPage,
-    totalItems: totalItems,
-    nextPage: nextPage,
-    previousPage: previousPage,
-    hasNextPage: hasNextPage,
-    hasPreviousPage: hasPreviousPage,
-    lastPage: lastPage,
-  };
-
+  const pagination = getPagination(currentPage, totalItems, perPage);
   console.log(pagination);
+  // const nextPage = +currentPage + 1;
+  // const previousPage = +currentPage - 1;
+  // const hasNextPage = perPage * +currentPage < totalItems;
+  // const hasPreviousPage = +currentPage > 1;
+  // const lastPage = Math.ceil(totalItems / perPage);
+
+  // const pagination = {
+  //   currentPage: +currentPage,
+  //   perPage: perPage,
+  //   totalItems: totalItems,
+  //   nextPage: nextPage,
+  //   previousPage: previousPage,
+  //   hasNextPage: hasNextPage,
+  //   hasPreviousPage: hasPreviousPage,
+  //   lastPage: lastPage,
+  // };
+
+  
 
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
@@ -189,6 +193,9 @@ const getProductIndexByParentCategory = async (req, res, next) => {
   }
 
   const countOfProduct = products.length;
+
+  const pagination = getPagination(currentPage,totalItems,perPage);
+  console.log(pagination);
 
   res.json({
     products: products.map((v) => v.toObject({ getters: true })),
