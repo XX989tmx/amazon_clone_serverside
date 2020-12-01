@@ -20,7 +20,45 @@ function isThisEmailInBlackList(email) {
   return result;
 }
 
-async function setThisAddressAsDefaultAddress(addressId) {
+async function setOtherAddressesAsNonDefault(addressId, userId) {
+  let allAddresses;
+  try {
+    allAddresses = await Address.find({ user: userId });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+
+  if (!allAddresses) {
+    const error = new Error("エラーが発生しました。");
+    return next(error);
+  }
+
+  for (let i = 0; i < allAddresses.length; i++) {
+    const address = allAddresses[i];
+    if (address._id.toString() !== addressId.toString()) {
+      address.isDefaultAddress = false;
+      try {
+        await address.save();
+        console.log(updatedAddresses);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  // const remainingAddresses = allAddresses.filter(
+  //   (v, i) => v._id.toString() !== addressId.toString()
+  // );
+
+  // const updatedAddresses = remainingAddresses.map(
+  //   (v, i) => (v.isDefaultAddress = false)
+  // );
+
+  
+}
+
+async function setThisAddressAsDefaultAddress(addressId, userId) {
   // find address doc
   let address;
   try {
@@ -45,6 +83,8 @@ async function setThisAddressAsDefaultAddress(addressId) {
     console.log(error);
     return next(error);
   }
+
+  await setOtherAddressesAsNonDefault(addressId, userId);
 
   const result = {
     address: address,

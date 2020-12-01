@@ -211,7 +211,7 @@ const setDefaultAddress = async (req, res, next) => {
   const addressId = req.params.addressId;
   const userId = req.params.userId;
 
-  const result = await setThisAddressAsDefaultAddress(addressId);
+  const result = await setThisAddressAsDefaultAddress(addressId,userId);
 
   res.status(200).json({ result });
 };
