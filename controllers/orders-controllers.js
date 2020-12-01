@@ -2,7 +2,12 @@ const Order = require("../models/order");
 const User = require("../models/user");
 const Product = require("../models/product");
 const Address = require("../models/address");
-const { getPagination } = require("../functions/products-controller-related-functions");
+const {
+  getPagination,
+} = require("../functions/products-controller-related-functions");
+const {
+  countTotalCountOfOrders,
+} = require("../functions/order-controller-related-functions");
 
 const createOrder = async (req, res, next) => {
   const userId = req.params.userId;
@@ -186,24 +191,16 @@ const getAllOrderHistory = async (req, res, next) => {
   const currentPage = req.query.page || 1;
   perPage = 16;
   let totalItems;
-  let count;
-  try {
-    count = await Order.find({ user: userId }).countDocuments();
-  } catch (error) {
-    return next(error);
-  }
 
-  //   if (count === 0) {
-  //     const error = new Error("no data was found.");
-  //     return next(error);
-  //   }
+  const count = await countTotalCountOfOrders(userId);
 
   totalItems = count;
 
   let orders;
   try {
     orders = await Order.find({ user: userId })
-      .populate({ path: "items", populate: { path: "productId" } }).sort({dateOrdered: "-1"})
+      .populate({ path: "items", populate: { path: "productId" } })
+      .sort({ dateOrdered: "-1" })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
@@ -221,7 +218,7 @@ const getAllOrderHistory = async (req, res, next) => {
   }
 
   const totalCountOfOrders = orders.length;
-  const pagination = getPagination(currentPage,totalItems,perPage);
+  const pagination = getPagination(currentPage, totalItems, perPage);
   console.log(pagination);
 
   res.json({ orders, totalCountOfOrders, totalItems, pagination });
@@ -255,7 +252,8 @@ const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   try {
     orders = await Order.find({ user: userId })
       .where("isAmazonCreditUsed")
-      .equals(true).sort({dateOrdered: '-1'})
+      .equals(true)
+      .sort({ dateOrdered: "-1" })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
   } catch (error) {
@@ -268,7 +266,7 @@ const getOrderHistoriesTransactedWithAmazonCredit = async (req, res, next) => {
   }
 
   const totalCountOfOrders = orders.length;
-  const pagination = getPagination(currentPage,totalItems,perPage);
+  const pagination = getPagination(currentPage, totalItems, perPage);
   console.log(pagination);
 
   res.status(200).json({

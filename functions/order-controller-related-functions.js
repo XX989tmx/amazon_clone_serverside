@@ -89,7 +89,19 @@ async function getOrdersOfThisMonth(userId) {
   return ordersOfThisMonth;
 }
 
+async function countTotalCountOfOrders(userId) {
+  let count;
+  try {
+    count = await Order.find({ user: userId }).countDocuments();
+  } catch (error) {
+    return next(error);
+  }
+
+  return count;
+}
+
 exports.calculateAcquirableAmazonPoint = calculateAcquirableAmazonPoint;
 exports.calculateTotalAmountOfPriceOfOrderOfAllTime = calculateTotalAmountOfPriceOfOrderOfAllTime;
 exports.calculateTotalAmountOfPriceOfOrderOfThisMonth = calculateTotalAmountOfPriceOfOrderOfThisMonth;
 exports.getOrdersOfThisMonth = getOrdersOfThisMonth;
+exports.countTotalCountOfOrders = countTotalCountOfOrders;
