@@ -104,7 +104,15 @@ async function getAllOrdersOfThisUser(userId, currentPage, perPage) {
   let orders;
   try {
     orders = await Order.find({ user: userId })
-      .populate({ path: "items", populate: { path: "productId" } })
+      .populate({
+        path: "items",
+        populate: {
+          path: "productId",
+          populate: { path: "seller", select: "-password" },
+        },
+      })
+      .populate({ path: "shipmentAddress" })
+      .populate({ path: "user", select: "-password -paymentMethod" })
       .sort({ dateOrdered: "-1" })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
