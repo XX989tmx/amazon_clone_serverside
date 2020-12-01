@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const {
-  getPagination,
+  getPagination, HowManyTimesIBoughtThisProduct,
 } = require("../functions/products-controller-related-functions");
 const Product = require("../models/product");
 
@@ -80,6 +80,7 @@ const getSpecificProductById = async (req, res, next) => {
   }
 
   const specificProduct = [product];
+
 
   res.json({
     specificProduct: specificProduct.map((v) => v.toObject({ getters: true })),
