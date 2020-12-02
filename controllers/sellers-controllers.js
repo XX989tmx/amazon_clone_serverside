@@ -5,17 +5,21 @@ const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 const Seller = require("../models/seller");
 const Product = require("../models/product");
+const {
+  checkInputValidationResult,
+} = require("../functions/utility-functions");
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
 const signup = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (errors.isEmpty() === false) {
-    console.log(errors);
-    const error = new Error("Invalid inputs. please check your input again.");
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() === false) {
+  //   console.log(errors);
+  //   const error = new Error("Invalid inputs. please check your input again.");
+  //   return next(error);
+  // }
 
   const { name, email, password } = req.body;
 
@@ -75,12 +79,13 @@ const signup = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (errors.isEmpty() !== true) {
-    console.log(errors);
-    const error = new Error("Invalid inputs. please check your input again.");
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() !== true) {
+  //   console.log(errors);
+  //   const error = new Error("Invalid inputs. please check your input again.");
+  //   return next(error);
+  // }
 
   const { email, password } = req.body;
 
@@ -138,13 +143,13 @@ const login = async (req, res, next) => {
 
 const createProduct = async (req, res, next) => {
   const sellerId = req.params.sellerId;
-
-  const errors = validationResult(req);
-  if (errors.isEmpty() === false) {
-    const error = new Error("Invalid inputs.");
-    console.log(error);
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() === false) {
+  //   const error = new Error("Invalid inputs.");
+  //   console.log(error);
+  //   return next(error);
+  // }
 
   const imageFiles = req.files;
 
@@ -216,12 +221,12 @@ const updateProduct = async (req, res, next) => {
   console.log(req);
   const sellerId = req.params.sellerId;
   const productId = req.params.productId;
-
-  const errors = validationResult(req);
-  if (errors.isEmpty() === false) {
-    const error = new Error("Invalid inputs.");
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() === false) {
+  //   const error = new Error("Invalid inputs.");
+  //   return next(error);
+  // }
 
   const {
     name,

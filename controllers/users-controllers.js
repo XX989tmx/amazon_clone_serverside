@@ -6,17 +6,21 @@ const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const Product = require("../models/product");
 const Order = require("../models/order");
+const {
+  checkInputValidationResult,
+} = require("../functions/utility-functions");
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
 const signup = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (errors.isEmpty() !== true) {
-    console.log(errors);
-    const error = new Error("Invalid inputs. please check your input again.");
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() !== true) {
+  //   console.log(errors);
+  //   const error = new Error("Invalid inputs. please check your input again.");
+  //   return next(error);
+  // }
   const { name, email, password } = req.body;
   //   const user = {
   //     name: name,
@@ -85,7 +89,7 @@ const signup = async (req, res, next) => {
     amazonCreditOrders: [],
     reviews: [],
     purchaseFrequency: [],
-    lastLoggedIn:[],
+    lastLoggedIn: [],
   });
 
   try {
@@ -119,12 +123,13 @@ const signup = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (errors.isEmpty() !== true) {
-    console.log(errors);
-    const error = new Error("Invalid inputs. please check you input again.");
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() !== true) {
+  //   console.log(errors);
+  //   const error = new Error("Invalid inputs. please check you input again.");
+  //   return next(error);
+  // }
 
   const { email, password } = req.body;
 
@@ -203,13 +208,13 @@ const addToCart = async (req, res, next) => {
   const productId = req.params.productId;
   const { quantity } = req.body;
   const userId = req.params.userId;
-
-  const errors = validationResult(req);
-  if (errors.isEmpty() !== true) {
-    console.log(errors);
-    const error = new Error("Invalid inputs. please check your input again.");
-    return next(error);
-  }
+  checkInputValidationResult(req)
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() !== true) {
+  //   console.log(errors);
+  //   const error = new Error("Invalid inputs. please check your input again.");
+  //   return next(error);
+  // }
 
   //   const productToAdd = {
   //     productId,

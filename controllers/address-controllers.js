@@ -5,15 +5,18 @@ const {
   setThisAddressAsDefaultAddress,
   getAllOfRegisteredAddressesOfThisUser,
 } = require("../functions/address-controller-related-functions");
+const {
+  checkInputValidationResult,
+} = require("../functions/utility-functions");
 
 const createAddress = async (req, res, next) => {
   const userId = req.params.userId;
-
-  const errors = validationResult(req);
-  if (errors.isEmpty() === false) {
-    const error = new Error("Invalid inputs.");
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() === false) {
+  //   const error = new Error("Invalid inputs.");
+  //   return next(error);
+  // }
   const {
     zipCode,
     country,
@@ -68,13 +71,13 @@ const createAddress = async (req, res, next) => {
 
 const updateAddress = async (req, res, next) => {
   const addressId = req.params.addressId;
-
-  const errors = validationResult(req);
-  if (errors.isEmpty() === false) {
-    const error = new Error("Invalid inputs.");
-    console.log(error);
-    return next(error);
-  }
+  checkInputValidationResult(req);
+  // const errors = validationResult(req);
+  // if (errors.isEmpty() === false) {
+  //   const error = new Error("Invalid inputs.");
+  //   console.log(error);
+  //   return next(error);
+  // }
 
   const {
     zipCode,
@@ -211,7 +214,7 @@ const setDefaultAddress = async (req, res, next) => {
   const addressId = req.params.addressId;
   const userId = req.params.userId;
 
-  const result = await setThisAddressAsDefaultAddress(addressId,userId);
+  const result = await setThisAddressAsDefaultAddress(addressId, userId);
 
   res.status(200).json({ result });
 };
