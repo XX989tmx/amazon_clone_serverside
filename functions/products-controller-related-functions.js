@@ -1,4 +1,5 @@
 const Order = require("../models/order");
+const User = require("../models/user");
 
 function getPagination(currentPage, totalItems, perPage) {
   const nextPage = +currentPage + 1;
@@ -51,6 +52,103 @@ async function HowManyTimesIBoughtThisProduct(userId, productId) {
   }
   console.log(frequency);
   return frequency;
+}
+
+async function updatePurchaseFrequency(userId, productId) {
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  let notFound = false;
+
+  if (user.purchaseFrequency.length !== 0) {
+    const purchaseFrequency = user.purchaseFrequency;
+
+    for (let i = 0; i < purchaseFrequency.length; i++) {
+      const doc = purchaseFrequency[i];
+      if (doc[productId].toString() === productId.toString()) {
+        doc[frequency] += 1;
+        doc.purchasedDate.push(new Date());
+      }
+    }
+
+    try {
+      await user.save();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  for (let i = 0; i < purchaseFrequency.length; i++) {
+    const doc = purchaseFrequency[i];
+    if (doc[productId].toString() !== productId.toString()) {
+      notFound = true;
+    }
+  }
+
+  //todo : このままでは買っていないものまでカウントされるので、Orderデータを読みチェックをかけるなどにより、フィルターをかける。
+
+  if (notFound) {
+    const newDoc = {
+      productId: productId,
+      frequency: 1,
+      purchasedDate: [],
+    };
+    newDoc.purchasedDate.push(new Date());
+    user.purchaseFrequency.push(newDoc);
+    try {
+      await user.save();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return user;
+}
+
+async function countPurchaseFrequencyOfThisProduct(userId, productId) {
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  const purchaseFrequency = user.purchaseFrequency;
+  let frequency;
+
+  for (const doc of purchaseFrequency) {
+    if (doc.productId.toString() === productId.toString()) {
+      frequency = doc.frequency;
+      break;
+    }
+  }
+
+  return frequency;
+}
+
+async function getLatestPurchasedDate(userId, productId) {
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  const purchaseFrequency = user.purchaseFrequency;
+  let lastDayOfPurchase;
+
+  for (const doc of purchaseFrequency) {
+    if (doc.productId.toString() === productId.toString()) {
+      lastDayOfPurchase = doc.purchasedDate.pop();
+      break;
+    }
+  }
+
+  return lastDayOfPurchase;
 }
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;

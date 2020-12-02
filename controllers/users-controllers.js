@@ -84,6 +84,8 @@ const signup = async (req, res, next) => {
     wishlists: [],
     amazonCreditOrders: [],
     reviews: [],
+    purchaseFrequency: [],
+    lastLoggedIn:[],
   });
 
   try {
