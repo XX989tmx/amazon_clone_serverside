@@ -1,3 +1,5 @@
+const { validationResult } = require("express-validator");
+
 function sum(array) {
   let sum = 0;
   for (let i = 0; i < array.length; i++) {
@@ -42,3 +44,14 @@ function search(array, val) {
 
   return -1;
 }
+
+function checkInputValidationResult(req) {
+  const errors = validationResult(req);
+  if (errors.isEmpty() === false) {
+    const error = new Error("Invalid inputs.");
+    console.log(error);
+    return next(error);
+  }
+}
+
+exports.checkInputValidationResult = checkInputValidationResult;
