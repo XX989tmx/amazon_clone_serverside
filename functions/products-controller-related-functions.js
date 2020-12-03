@@ -409,6 +409,47 @@ async function updateReviewStatsOfProduct(product) {
   return updated2Product;
 }
 
+function findXRatedProducts(docArray, rate) {
+  let gteXRateProducts = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const averageRate = doc.stats.reviewStats.averageRate;
+    if (averageRate >= rate) {
+      gteXRateProducts.push(doc);
+    }
+  }
+  return gteXRateProducts;
+}
+
+function filterProductByReviewRate(docArray, rateQuery) {
+  let gteXRateProducts = [];
+
+  if (!rateQuery) {
+    console.log("rateQuery is not provided.");
+  }
+
+  switch (rateQuery) {
+    case ">=4":
+      gteXRateProducts = findXRatedProducts(docArray, 4);
+      break;
+
+    case ">=3":
+      gteXRateProducts = findXRatedProducts(docArray, 3);
+      break;
+
+    case ">=2":
+      gteXRateProducts = findXRatedProducts(docArray, 2);
+      break;
+
+    case ">=1":
+      gteXRateProducts = findXRatedProducts(docArray, 1);
+    default:
+      break;
+  }
+
+  return gteXRateProducts;
+}
+
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
 exports.filterByPrice = filterByPrice;
