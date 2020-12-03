@@ -1,6 +1,13 @@
 const Review = require("../models/review");
 const User = require("../models/user");
 const Product = require("../models/product");
+const {
+  findProduct,
+} = require("../functions/seller-controller-related-functions");
+const {
+  findProductById,
+  updateReviewStatsOfProduct,
+} = require("../functions/products-controller-related-functions");
 
 const CreateNewReviewToProduct = async (req, res, next) => {
   console.log(req);
@@ -25,18 +32,19 @@ const CreateNewReviewToProduct = async (req, res, next) => {
 
   // Authorization here
 
-  let product;
-  try {
-    product = await Product.findById(productId);
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
+  // let product;
+  // try {
+  //   product = await Product.findById(productId);
+  // } catch (error) {
+  //   console.log(error);
+  //   return next(error);
+  // }
 
-  if (!product) {
-    const error = new Error("Error occurred. Product data was not found.");
-    return next(error);
-  }
+  // if (!product) {
+  //   const error = new Error("Error occurred. Product data was not found.");
+  //   return next(error);
+  // }
+  const product = await findProductById(productId);
 
   const createdReview = new Review({
     rate: Number(rate),
@@ -55,7 +63,14 @@ const CreateNewReviewToProduct = async (req, res, next) => {
   await product.reviews.push(createdReview);
   await product.save();
 
-  res.status(200).json({ createdReview, user, product });
+  async function updateProductReview(productId) {
+    const product = await findProductById(productId);
+    const updated2Product = await updateReviewStatsOfProduct(product);
+    return updated2Product;
+  }
+  const updated2Product = await updateProductReview(productId);
+
+  res.status(200).json({ createdReview, user, updated2Product });
 };
 
 const updateReview = async (req, res, next) => {

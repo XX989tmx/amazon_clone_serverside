@@ -25,7 +25,9 @@ function getPagination(currentPage, totalItems, perPage) {
 async function findProductById(productId) {
   let product;
   try {
-    product = await Product.findById(productId);
+    product = await (
+      await Product.findById(productId).populate("reviews").populate("seller")
+    ).populate({ path: "user", select: "-password" });
   } catch (error) {
     console.log(error);
   }
@@ -39,8 +41,8 @@ async function findProductById(productId) {
 
 function calculateAverageRateOfReview(product) {
   // rate
-  // 星N個のNを取得
-  //   let reviews = product.reviews;
+  // 平均星N個のNを取得
+  let reviews = product.reviews;
   //   let count = reviews.length;
   let count = getReviewCountOfProduct(product);
   let sum = 0;
@@ -397,12 +399,18 @@ async function saveProduct(product) {
 // レビュー作成ごとに以下を実行
 async function updateReviewStatsOfProduct(product) {
   const updated1Product = await updateAverageRateOfReviewOfProduct(product);
+
   const updated2Product = await updateTotalCountOfReviewOfProduct(
     updated1Product
   );
+
   await saveProduct(updated2Product);
+
+  return updated2Product;
 }
 
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
 exports.filterByPrice = filterByPrice;
+exports.findProductById = findProductById;
+exports.updateReviewStatsOfProduct = updateReviewStatsOfProduct;
