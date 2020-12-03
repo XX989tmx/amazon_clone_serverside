@@ -271,6 +271,31 @@ function filterByPrice(docArray, priceQuery) {
   return results;
 }
 
+function filterProductWithTrueStockStatus(docArray) {
+  let trueStockProducts;
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const stockStatus = doc.isStock;
+    if (stockStatus) {
+      trueStockProducts.push(doc);
+    }
+  }
+  return trueStockProducts;
+}
+
+function filterProductWithFalseStockStatus(docArray) {
+  let falseStockProducts;
+
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const stockStatus = doc.isStock;
+    if (!stockStatus) {
+      falseStockProducts.push(doc);
+    }
+  }
+  return falseStockProducts;
+}
+
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
 exports.filterByPrice = filterByPrice;
