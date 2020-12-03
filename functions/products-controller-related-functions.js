@@ -176,6 +176,73 @@ async function OrSearchProduct(keyword) {
   return products;
 }
 
+function find_0To500_Priced_Items(docArray) {
+  let price1 = 0;
+  let price2 = 500;
+  let matchedDocs = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const price = doc.price;
+    if (isPriceMatch(price, price1, price2)) {
+      matchedDocs.push(doc);
+    }
+  }
+  return matchedDocs;
+}
+
+function find_500To1000_Priced_Items(docArray) {
+  let price1 = 500;
+  let price2 = 1000;
+  let matchedDocs = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const price = doc.price;
+    if (isPriceMatch(price, price1, price2)) {
+      matchedDocs.push(doc);
+    }
+  }
+  return matchedDocs;
+}
+
+function find_1000To2000_Priced_Items(docArray) {
+  let price1 = 1000;
+  let price2 = 2000;
+  let matchedDocs = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const price = doc.price;
+    if (isPriceMatch(price, price1, price2)) {
+      matchedDocs.push(doc);
+    }
+  }
+  return matchedDocs;
+}
+
+function find_2000To5000_Priced_Items(docArray) {
+  let price1 = 2000;
+  let price2 = 5000;
+  let matchedDocs = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const price = doc.price;
+    if (isPriceMatch(price, price1, price2)) {
+      matchedDocs.push(doc);
+    }
+  }
+  return matchedDocs;
+}
+function find_moreThan5000_Priced_Items(docArray) {
+  let matchedDocs = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const price = doc.price;
+    if (isMoreThan5000(price)) {
+      matchedDocs.push(doc);
+    }
+  }
+  return matchedDocs;
+}
+
 function isPriceMatch(value, price1, price2) {
   if (value >= price1 && value <= price2) {
     return true;
@@ -183,61 +250,36 @@ function isPriceMatch(value, price1, price2) {
     return false;
   }
 }
+function isMoreThan5000(value) {
+  if (value > 5000) {
+    return true;
+  } else {
+    false;
+  }
+}
 function filterByPrice(docArray, priceQuery) {
   let results;
   switch (priceQuery) {
     case "0-500":
       // 0 - 500
-      function find_0To500_Priced_Items(docArray) {
-        let price1 = 0;
-        let price2 = 500;
-        let matchedDocs = [];
-        for (let i = 0; i < docArray.length; i++) {
-          const doc = docArray[i];
-          const price = doc.price;
-          if (isPriceMatch(price, price1, price2)) {
-            matchedDocs.push(doc);
-          }
-        }
-        return matchedDocs;
-      }
       results = find_0To500_Priced_Items(docArray);
-
       break;
 
     case "500-1000":
-      function find_500To1000_Priced_Items(docArray) {
-        let price1 = 500;
-        let price2 = 1000;
-        let matchedDocs = [];
-        for (let i = 0; i < docArray.length; i++) {
-          const doc = docArray[i];
-          const price = doc.price;
-          if (isPriceMatch(price, price1, price2)) {
-            matchedDocs.push(doc);
-          }
-        }
-        return matchedDocs;
-      }
       results = find_500To1000_Priced_Items(docArray);
 
       break;
 
     case "1000-2000":
-      function find_1000To2000_Priced_Items(docArray) {
-        let price1 = 1000;
-        let price2 = 2000;
-        let matchedDocs = [];
-        for (let i = 0; i < docArray.length; i++) {
-          const doc = docArray[i];
-          const price = doc.price;
-          if (isPriceMatch(price, price1, price2)) {
-            matchedDocs.push(doc);
-          }
-        }
-        return matchedDocs;
-      }
       results = find_1000To2000_Priced_Items(docArray);
+      break;
+
+    case "2000-5000":
+      results = find_2000To5000_Priced_Items(docArray);
+      break;
+
+    case ">5000":
+      results = find_moreThan5000_Priced_Items(docArray);
       break;
 
     default:
