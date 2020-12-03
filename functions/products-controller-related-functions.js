@@ -272,7 +272,7 @@ function filterByPrice(docArray, priceQuery) {
 }
 
 function filterProductWithTrueStockStatus(docArray) {
-  let trueStockProducts;
+  let trueStockProducts = [];
   for (let i = 0; i < docArray.length; i++) {
     const doc = docArray[i];
     const stockStatus = doc.isStock;
@@ -284,7 +284,7 @@ function filterProductWithTrueStockStatus(docArray) {
 }
 
 function filterProductWithFalseStockStatus(docArray) {
-  let falseStockProducts;
+  let falseStockProducts = [];
 
   for (let i = 0; i < docArray.length; i++) {
     const doc = docArray[i];
@@ -294,6 +294,24 @@ function filterProductWithFalseStockStatus(docArray) {
     }
   }
   return falseStockProducts;
+}
+
+function filterProductWithBrand(docArray, brandQuery) {
+  let brandFilteredProducts = [];
+
+  if (!brandQuery) {
+    console.log("brandQuery is not provided");
+  }
+
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const brand = doc.brand;
+    if (brandQuery.toString() === brand.toString()) {
+      brandFilteredProducts.push(doc);
+    }
+  }
+
+  return brandFilteredProducts;
 }
 
 exports.getPagination = getPagination;
