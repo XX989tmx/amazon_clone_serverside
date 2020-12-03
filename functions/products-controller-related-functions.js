@@ -22,6 +22,45 @@ function getPagination(currentPage, totalItems, perPage) {
   return pagination;
 }
 
+async function findProductById(productId) {
+  let product;
+  try {
+    product = await Product.findById(productId);
+  } catch (error) {
+    console.log(error);
+  }
+  if (!product) {
+    const error = new Error("data was not found.");
+    return next(error);
+  }
+
+  return product;
+}
+
+function calculateAverageRateOfReview(product) {
+  // rate
+  // 星N個のNを取得
+  //   let reviews = product.reviews;
+  //   let count = reviews.length;
+  let count = getReviewCountOfProduct(product);
+  let sum = 0;
+  for (let i = 0; i < reviews.length; i++) {
+    const reviewDoc = reviews[i];
+    const rate = reviewDoc.rate;
+    sum += rate;
+  }
+
+  const averageRate = Math.floor(sum / count);
+
+  return averageRate;
+}
+
+function getReviewCountOfProduct(product) {
+  let reviews = product.reviews;
+  let count = reviews.length;
+  return count;
+}
+
 async function HowManyTimesIBoughtThisProduct(userId, productId) {
   let orders;
   try {
