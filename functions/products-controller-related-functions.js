@@ -177,58 +177,22 @@ async function OrSearchProduct(keyword) {
 }
 
 function find_0To500_Priced_Items(docArray) {
-  let price1 = 0;
-  let price2 = 500;
-  let matchedDocs = [];
-  for (let i = 0; i < docArray.length; i++) {
-    const doc = docArray[i];
-    const price = doc.price;
-    if (isPriceMatch(price, price1, price2)) {
-      matchedDocs.push(doc);
-    }
-  }
+  const matchedDocs = returnPriceMatchedDocs(0, 500, docArray);
   return matchedDocs;
 }
 
 function find_500To1000_Priced_Items(docArray) {
-  let price1 = 500;
-  let price2 = 1000;
-  let matchedDocs = [];
-  for (let i = 0; i < docArray.length; i++) {
-    const doc = docArray[i];
-    const price = doc.price;
-    if (isPriceMatch(price, price1, price2)) {
-      matchedDocs.push(doc);
-    }
-  }
+  const matchedDocs = returnPriceMatchedDocs(500, 1000, docArray);
   return matchedDocs;
 }
 
 function find_1000To2000_Priced_Items(docArray) {
-  let price1 = 1000;
-  let price2 = 2000;
-  let matchedDocs = [];
-  for (let i = 0; i < docArray.length; i++) {
-    const doc = docArray[i];
-    const price = doc.price;
-    if (isPriceMatch(price, price1, price2)) {
-      matchedDocs.push(doc);
-    }
-  }
+  const matchedDocs = returnPriceMatchedDocs(1000, 2000, docArray);
   return matchedDocs;
 }
 
 function find_2000To5000_Priced_Items(docArray) {
-  let price1 = 2000;
-  let price2 = 5000;
-  let matchedDocs = [];
-  for (let i = 0; i < docArray.length; i++) {
-    const doc = docArray[i];
-    const price = doc.price;
-    if (isPriceMatch(price, price1, price2)) {
-      matchedDocs.push(doc);
-    }
-  }
+  const matchedDocs = returnPriceMatchedDocs(2000, 5000, docArray);
   return matchedDocs;
 }
 function find_moreThan5000_Priced_Items(docArray) {
@@ -237,6 +201,18 @@ function find_moreThan5000_Priced_Items(docArray) {
     const doc = docArray[i];
     const price = doc.price;
     if (isMoreThan5000(price)) {
+      matchedDocs.push(doc);
+    }
+  }
+  return matchedDocs;
+}
+
+function returnPriceMatchedDocs(price1, price2, docArray) {
+  let matchedDocs = [];
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const price = doc.price;
+    if (isPriceMatch(price, price1, price2)) {
       matchedDocs.push(doc);
     }
   }
@@ -259,6 +235,12 @@ function isMoreThan5000(value) {
 }
 function filterByPrice(docArray, priceQuery) {
   let results;
+  if (docArray.length === 0) {
+    console.log("array is empty");
+  }
+  if (!priceQuery) {
+    console.log("price query is not provided");
+  }
   switch (priceQuery) {
     case "0-500":
       // 0 - 500
