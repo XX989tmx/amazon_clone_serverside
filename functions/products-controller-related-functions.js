@@ -314,6 +314,27 @@ function filterProductWithBrand(docArray, brandQuery) {
   return brandFilteredProducts;
 }
 
+function filterProductWithSeller(docArray, sellerQuery) {
+  // populate(seller) is required before execute this function
+  let sellerFilteredQuery = [];
+
+  if (!sellerQuery) {
+    console.log("seller query is not provided");
+  }
+
+  for (let i = 0; i < docArray.length; i++) {
+    const doc = docArray[i];
+    const seller = doc.seller.name;
+    if (seller) {
+      if (sellerQuery.toString() === seller.toString()) {
+        sellerFilteredQuery.push(doc);
+      }
+    }
+  }
+
+  return sellerFilteredQuery;
+}
+
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
 exports.filterByPrice = filterByPrice;
