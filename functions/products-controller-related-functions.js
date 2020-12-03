@@ -374,6 +374,35 @@ function filterProductWithSeller(docArray, sellerQuery) {
   return sellerFilteredQuery;
 }
 
+async function updateAverageRateOfReviewOfProduct(product) {
+  const averageRate = calculateAverageRateOfReview(product);
+  product.stats.reviewStats.averageRate = averageRate;
+  return product;
+}
+
+async function updateTotalCountOfReviewOfProduct(product) {
+  const reviewCount = getReviewCountOfProduct(product);
+  product.stats.reviewStats.totalCount = reviewCount;
+  return product;
+}
+
+async function saveProduct(product) {
+  try {
+    await product.save();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// レビュー作成ごとに以下を実行
+async function updateReviewStatsOfProduct(product) {
+  const updated1Product = await updateAverageRateOfReviewOfProduct(product);
+  const updated2Product = await updateTotalCountOfReviewOfProduct(
+    updated1Product
+  );
+  await saveProduct(updated2Product);
+}
+
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
 exports.filterByPrice = filterByPrice;

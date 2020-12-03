@@ -167,6 +167,13 @@ const createProduct = async (req, res, next) => {
 
   const parsedAncestorsCategories = ancestorCategories.split(",");
 
+  const initialStats = {
+    reviewStats: {
+      averageRate: 0,
+      totalCount: 0,
+    },
+  };
+
   const createdProduct = new Product({
     name,
     price,
@@ -179,6 +186,8 @@ const createProduct = async (req, res, next) => {
     isStock,
     seller: sellerId,
     images: [],
+    reviews: [],
+    stats: initialStats,
   });
 
   for (let i = 0; i < imageFiles.length; i++) {

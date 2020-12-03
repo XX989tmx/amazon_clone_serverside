@@ -15,6 +15,12 @@ const productSchema = new Schema({
   userCart: { type: mongoose.Types.ObjectId, ref: "User" },
   images: [{ imageName: { type: String }, imageUrl: { type: String } }],
   reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
+  stats: {
+    reviewStats: {
+      averageRate: { type: Number },
+      totalCount: { type: Number },
+    },
+  },
 });
 
 module.exports = mongoose.model("Product", productSchema);
