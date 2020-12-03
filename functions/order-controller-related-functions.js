@@ -22,16 +22,22 @@ async function getOrdersOfThisUser(userId) {
 
   return orders;
 }
-
+/**
+ *
+ *
+ * @param {*} price
+ * @return {number} acquirablePoint
+ */
 function calculateAcquirableAmazonPoint(price) {
-  if (typeof price !== "number") {
-    const error = new TypeError("Input is not a number");
-    return error;
-  }
-  const acquirablePoint = Math.round(price * 0.01);
+  const acquirablePoint = Math.round(Number(price) * 0.01);
   return acquirablePoint;
 }
-
+/**
+ *
+ *
+ * @param {*} userId
+ * @return {number} sum
+ */
 async function calculateTotalAmountOfPriceOfOrderOfAllTime(userId) {
   const orders = await getOrdersOfThisUser(userId);
 
