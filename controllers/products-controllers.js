@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const {
   getPagination,
   HowManyTimesIBoughtThisProduct,
-  
+  filterByPrice,
 } = require("../functions/products-controller-related-functions");
 const Product = require("../models/product");
 

@@ -152,7 +152,7 @@ async function getLatestPurchasedDate(userId, productId) {
   return lastDayOfPurchase;
 }
 
-async function searchProduct(keyword) {
+async function OrSearchProduct(keyword) {
   query = {
     $or: [
       { name: { $regex: keyword, $options: "i" } },
@@ -175,6 +175,78 @@ async function searchProduct(keyword) {
 
   return products;
 }
+
+function isPriceMatch(value, price1, price2) {
+  if (value >= price1 && value <= price2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+function filterByPrice(docArray, priceQuery) {
+  let results;
+  switch (priceQuery) {
+    case "0-500":
+      // 0 - 500
+      function find_0To500_Priced_Items(docArray) {
+        let price1 = 0;
+        let price2 = 500;
+        let matchedDocs = [];
+        for (let i = 0; i < docArray.length; i++) {
+          const doc = docArray[i];
+          const price = doc.price;
+          if (isPriceMatch(price, price1, price2)) {
+            matchedDocs.push(doc);
+          }
+        }
+        return matchedDocs;
+      }
+      results = find_0To500_Priced_Items(docArray);
+
+      break;
+
+    case "500-1000":
+      function find_500To1000_Priced_Items(docArray) {
+        let price1 = 500;
+        let price2 = 1000;
+        let matchedDocs = [];
+        for (let i = 0; i < docArray.length; i++) {
+          const doc = docArray[i];
+          const price = doc.price;
+          if (isPriceMatch(price, price1, price2)) {
+            matchedDocs.push(doc);
+          }
+        }
+        return matchedDocs;
+      }
+      results = find_500To1000_Priced_Items(docArray);
+
+      break;
+
+    case "1000-2000":
+      function find_1000To2000_Priced_Items(docArray) {
+        let price1 = 1000;
+        let price2 = 2000;
+        let matchedDocs = [];
+        for (let i = 0; i < docArray.length; i++) {
+          const doc = docArray[i];
+          const price = doc.price;
+          if (isPriceMatch(price, price1, price2)) {
+            matchedDocs.push(doc);
+          }
+        }
+        return matchedDocs;
+      }
+      results = find_1000To2000_Priced_Items(docArray);
+      break;
+
+    default:
+      break;
+  }
+
+  return results;
+}
+
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
-exports.searchProduct = searchProduct;
+exports.filterByPrice = filterByPrice;
