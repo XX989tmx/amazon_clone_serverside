@@ -1,5 +1,6 @@
 const Order = require("../models/order");
 const User = require("../models/user");
+const Product = require("../models/product");
 
 function getPagination(currentPage, totalItems, perPage) {
   const nextPage = +currentPage + 1;
@@ -150,5 +151,30 @@ async function getLatestPurchasedDate(userId, productId) {
 
   return lastDayOfPurchase;
 }
+
+async function searchProduct(keyword) {
+  query = {
+    $or: [
+      { name: { $regex: keyword, $options: "i" } },
+      { brand: { $regex: keyword, $options: "i" } },
+      { categories: { $regex: keyword, $options: "i" } },
+    ],
+  };
+
+  let products;
+  try {
+    products = await Product.find(query);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!products) {
+    const error = new Error("キーワードに一致する商品が見つかりませんでした。");
+    return next(error);
+  }
+
+  return products;
+}
 exports.getPagination = getPagination;
 exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
+exports.searchProduct = searchProduct;
