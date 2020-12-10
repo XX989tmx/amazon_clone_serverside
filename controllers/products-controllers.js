@@ -201,6 +201,7 @@ const getProductIndexByParentCategory = async (req, res, next) => {
     products: products.map((v) => v.toObject({ getters: true })),
     countOfProduct,
     totalItems,
+    pagination,
   });
 };
 
