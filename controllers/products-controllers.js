@@ -4,6 +4,7 @@ const {
   getPagination,
   HowManyTimesIBoughtThisProduct,
   filterByPrice,
+  OrSearchProduct,
 } = require("../functions/products-controller-related-functions");
 const Product = require("../models/product");
 
@@ -304,9 +305,17 @@ const getProductIndexByBrand = async (req, res, next) => {
   });
 };
 
+const searchProduct = async (req, res, next) => {
+  const searchQuery = req.query.search;
+  const products = await OrSearchProduct(searchQuery);
+
+  res.json({ products: products.map((v, i) => v.toObject({ getters: true })) });
+};
+
 exports.getAllProducts = getAllProducts;
 exports.getSpecificProductById = getSpecificProductById;
 exports.getProductIndexByCategory = getProductIndexByCategory;
 exports.getProductIndexByParentCategory = getProductIndexByParentCategory;
 exports.getProductIndexByAncestorCategory = getProductIndexByAncestorCategory;
 exports.getProductIndexByBrand = getProductIndexByBrand;
+exports.searchProduct = searchProduct;

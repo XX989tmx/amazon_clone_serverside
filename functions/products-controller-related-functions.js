@@ -455,3 +455,4 @@ exports.HowManyTimesIBoughtThisProduct = HowManyTimesIBoughtThisProduct;
 exports.filterByPrice = filterByPrice;
 exports.findProductById = findProductById;
 exports.updateReviewStatsOfProduct = updateReviewStatsOfProduct;
+exports.OrSearchProduct = OrSearchProduct;
