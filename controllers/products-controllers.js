@@ -307,9 +307,43 @@ const getProductIndexByBrand = async (req, res, next) => {
 
 const searchProduct = async (req, res, next) => {
   const searchQuery = req.query.search;
-  const products = await OrSearchProduct(searchQuery);
 
-  res.json({ products: products.map((v, i) => v.toObject({ getters: true })) });
+  const currentPage = req.query.page || 1;
+  let perPage;
+  let totalItems;
+  let count;
+  perPage = 24;
+
+  const countDocumentOfQueriedProducts = async (keyword) => {
+    query = {
+      $or: [
+        { name: { $regex: keyword, $options: "i" } },
+        { brand: { $regex: keyword, $options: "i" } },
+        { categories: { $regex: keyword, $options: "i" } },
+      ],
+    };
+
+    let count;
+    try {
+      count = await Product.find(query).countDocuments();
+    } catch (error) {
+      console.log(error);
+    }
+
+    return count;
+  };
+
+  count = await countDocumentOfQueriedProducts(searchQuery);
+  totalItems = count;
+
+  const products = await OrSearchProduct(searchQuery, currentPage, perPage);
+
+  const pagination = getPagination(currentPage, totalItems, perPage);
+
+  res.json({
+    products: products.map((v, i) => v.toObject({ getters: true })),
+    pagination,
+  });
 };
 
 exports.getAllProducts = getAllProducts;

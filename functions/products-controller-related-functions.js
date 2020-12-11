@@ -193,7 +193,7 @@ async function getLatestPurchasedDate(userId, productId) {
   return lastDayOfPurchase;
 }
 
-async function OrSearchProduct(keyword) {
+async function OrSearchProduct(keyword, currentPage, perPage) {
   query = {
     $or: [
       { name: { $regex: keyword, $options: "i" } },
@@ -204,7 +204,10 @@ async function OrSearchProduct(keyword) {
 
   let products;
   try {
-    products = await Product.find(query);
+    products = await Product.find(query)
+      .populate({ path: "seller", select: "-password" })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
   } catch (error) {
     console.log(error);
   }
