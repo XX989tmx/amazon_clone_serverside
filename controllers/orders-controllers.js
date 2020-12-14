@@ -36,7 +36,10 @@ const createOrder = async (req, res, next) => {
 
   let user;
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).populate({
+      path: "cart",
+      populate: { path: "items", populate: { path: "productId" } },
+    });
   } catch (error) {
     console.log(error);
   }
@@ -155,7 +158,16 @@ const createOrder = async (req, res, next) => {
   }
 
   const mailer = new Mailer();
-  await mailer.orderComplete(user.name, user.email, createdOrder.totalPrice);
+  await mailer.orderComplete(
+    user.name,
+    user.email,
+    createdOrder.totalPrice,
+    createdOrder.totalCount,
+    createdOrder.dateOrdered,
+    createdOrder.usedAmazonPoint,
+    createdOrder.addedAmazonPoint,
+    user.cart.items
+  );
 
   // clear cart after order completion;
   let userAfterOrderCompletion;
