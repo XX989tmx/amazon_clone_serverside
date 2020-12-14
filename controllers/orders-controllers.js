@@ -9,6 +9,7 @@ const {
   countTotalCountOfOrders,
   getAllOrdersOfThisUser,
 } = require("../functions/order-controller-related-functions");
+const { Mailer } = require("../class/mailer");
 
 const createOrder = async (req, res, next) => {
   const userId = req.params.userId;
@@ -152,6 +153,9 @@ const createOrder = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
+
+  const mailer = new Mailer();
+  await mailer.orderComplete(user.name, user.email, createdOrder.totalPrice);
 
   // clear cart after order completion;
   let userAfterOrderCompletion;
